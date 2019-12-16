@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Main1Activity">
+
+    <RadioGroup
+        android:id="@+id/modeRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp">
+
+        <RadioButton
+            android:id="@+id/mode1Radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Care Seeker Mode" />
+
+        <RadioButton
+            android:id="@+id/mode2Radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Care Giver Mode" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/modeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:layout_gravity="center"/>
+</LinearLayout>
