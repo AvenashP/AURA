@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.avenashp.auratest.Main4Activity;
+import com.avenashp.auratest.ChatsActivity;
 import com.avenashp.auratest.R;
 import com.avenashp.auratest.ModelClass.ContactModel;
 
@@ -60,7 +60,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ShowCont
         holder.contactLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), Main4Activity.class);
+                Intent intent = new Intent(view.getContext(), ChatsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("chatID", contactModels.get(holder.getAdapterPosition()).getChatId());
                 Log.i("##################","CHAT ID bundle = "+ contactModels.get(holder.getAdapterPosition()).getChatId());

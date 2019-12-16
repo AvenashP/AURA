@@ -4,13 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-public class Main1Activity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
     private Button modeButton;
     private RadioGroup modeRadio;
     private int xMode = 2;
@@ -18,7 +17,7 @@ public class Main1Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main1);
+        setContentView(R.layout.activity_user);
 
         funInitializeVariables();
 
@@ -28,10 +27,10 @@ public class Main1Activity extends AppCompatActivity {
                 xMode = modeRadio.indexOfChild(findViewById(modeRadio.getCheckedRadioButtonId()));
                 //Log.i("########","-------> " + xMode);
                 if(xMode == 2){
-                    Toast.makeText(Main1Activity.this,"select a Mode !",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserActivity.this,"select a Mode !",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Intent intent = new Intent(Main1Activity.this, Main2Activity.class);
+                    Intent intent = new Intent(UserActivity.this, NewUserActivity.class);
                     intent.putExtra("xMode",xMode);
                     startActivity(intent);
                     finish();

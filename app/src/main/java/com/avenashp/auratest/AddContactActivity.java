@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Main3Activity extends AppCompatActivity {
+public class AddContactActivity extends AppCompatActivity {
 
     private Button addButton,nextButton;
     private TextInputEditText longField,shortField,numberField;
@@ -32,7 +32,7 @@ public class Main3Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main3);
+        setContentView(R.layout.activity_add_contact);
 
         xMode = getIntent().getIntExtra("xMode",2);
 
@@ -94,7 +94,7 @@ public class Main3Activity extends AppCompatActivity {
                                 longField.setText("");
                                 shortField.setText("");
                                 numberField.setText("");
-                                Toast.makeText(Main3Activity.this,"contact added !",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddContactActivity.this,"contact added !",Toast.LENGTH_SHORT).show();
                                 FLAG = 0;
                                 break;
                             }
@@ -103,7 +103,7 @@ public class Main3Activity extends AppCompatActivity {
                             }
                         }
                         if(FLAG == 1){
-                            Toast.makeText(Main3Activity.this,"not a registered user",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddContactActivity.this,"not a registered user",Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -117,7 +117,7 @@ public class Main3Activity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Main3Activity.this,Main5Activity.class);
+                Intent intent = new Intent(AddContactActivity.this, ContactsActivity.class);
                 intent.putExtra("xMode",xMode);
                 startActivity(intent);
                 finish();
@@ -127,7 +127,7 @@ public class Main3Activity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
-        startActivity(new Intent(Main3Activity.this,Main5Activity.class));
+        startActivity(new Intent(AddContactActivity.this, ContactsActivity.class));
         super.onBackPressed();
     }
 }

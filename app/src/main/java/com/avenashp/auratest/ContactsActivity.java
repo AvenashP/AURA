@@ -29,7 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class Main5Activity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity {
 
     private RecyclerView contactRV;
     private RecyclerView.Adapter contactRV_A;
@@ -48,7 +48,7 @@ public class Main5Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main5);
+        setContentView(R.layout.activity_contacts);
 
         contactModels = new ArrayList<>();
         xMode = getIntent().getIntExtra("xMode",2);
@@ -65,7 +65,7 @@ public class Main5Activity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         xUserId = mUser.getUid();
         mRootRef = FirebaseDatabase.getInstance();
-        mProgressDialog = new ProgressDialog(Main5Activity.this);
+        mProgressDialog = new ProgressDialog(ContactsActivity.this);
         mCareSeekerRef = mRootRef.getReference("Care Seeker Details");
         mCareGiverRef = mRootRef.getReference("Care Giver Details");
         mAllUsersRef = mRootRef.getReference("All Users ID");
@@ -177,7 +177,7 @@ public class Main5Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.addcontactsMenu:
-                startActivity(new Intent(Main5Activity.this,Main3Activity.class));
+                startActivity(new Intent(ContactsActivity.this, AddContactActivity.class));
                 finish();
                 break;
 
@@ -189,7 +189,7 @@ public class Main5Activity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(Main5Activity.this, MainActivity.class);
+                        Intent intent = new Intent(ContactsActivity.this, SplashActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();

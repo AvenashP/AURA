@@ -15,11 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".Main6Activity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".Main4Activity" />
+        <activity android:name=".ExistingUserActivity"></activity>
+        <activity android:name=".PhoneAuthActivity" />
+        <activity android:name=".ChatsActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,16 +28,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Main5Activity"
+            android:name=".ContactsActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".Main3Activity"
+            android:name=".AddContactActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".Main1Activity"
+            android:name=".UserActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".Main2Activity"
+            android:name=".NewUserActivity"
             android:launchMode="singleTask" />
     </application>
 

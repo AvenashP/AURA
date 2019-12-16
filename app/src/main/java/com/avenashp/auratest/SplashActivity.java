@@ -10,7 +10,7 @@ import android.view.WindowManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     public FirebaseAuth firebaseAuth;
     public int TIME_OUT = 1500;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
 
         firebaseAuth= FirebaseAuth.getInstance();
         FirebaseUser user=firebaseAuth.getCurrentUser();
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(MainActivity.this, Main5Activity.class));
+                    startActivity(new Intent(SplashActivity.this, ContactsActivity.class));
                     finish();
                 }
             }, TIME_OUT);
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(MainActivity.this, Main1Activity.class));
+                    startActivity(new Intent(SplashActivity.this, UserActivity.class));
                     finish();
                 }
             }, TIME_OUT);

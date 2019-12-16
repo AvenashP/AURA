@@ -28,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.concurrent.TimeUnit;
 
-public class Main2Activity extends AppCompatActivity {
+public class NewUserActivity extends AppCompatActivity {
 
     private TextInputEditText nameField,ageField,genderField,numberField, codeField;
     private Button loginButton,sendButton;
@@ -44,7 +44,7 @@ public class Main2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_new_user);
         FirebaseApp.initializeApp(this);
 
         mAuth = FirebaseAuth.getInstance();
@@ -52,7 +52,7 @@ public class Main2Activity extends AppCompatActivity {
         mCareSeekerRef = mRootRef.getReference("Care Seeker Details");
         mCareGiverRef = mRootRef.getReference("Care Giver Details");
         mAllUsersRef = mRootRef.getReference("All Users ID");
-        mProgressDialog = new ProgressDialog(Main2Activity.this);
+        mProgressDialog = new ProgressDialog(NewUserActivity.this);
         nameField = findViewById(R.id.nameField);
         ageField = findViewById(R.id.ageField);
         genderField = findViewById(R.id.genderField);
@@ -72,7 +72,7 @@ public class Main2Activity extends AppCompatActivity {
                 xGender = genderField.getText().toString();
                 xNumber = numberField.getText().toString();
 
-                Toast.makeText(Main2Activity.this,"Sending Code...",Toast.LENGTH_LONG).show();
+                Toast.makeText(NewUserActivity.this,"Sending Code...",Toast.LENGTH_LONG).show();
                 funSendVerificationCode(xNumber);
             }
         });
@@ -93,19 +93,19 @@ public class Main2Activity extends AppCompatActivity {
                     funVerifyCode(xCode);
                 }
                 else{
-                    Toast.makeText(Main2Activity.this,"enter the code",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewUserActivity.this,"enter the code",Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
             public void onVerificationFailed(FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(Main2Activity.this,"Invalid Request !",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewUserActivity.this,"Invalid Request !",Toast.LENGTH_SHORT).show();
                 }
                 else if (e instanceof FirebaseTooManyRequestsException) {
-                    Toast.makeText(Main2Activity.this,"SMS Exceeded",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewUserActivity.this,"SMS Exceeded",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(Main2Activity.this,"Try again later",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewUserActivity.this,"Try again later",Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -117,7 +117,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void funSendVerificationCode(String xNumber) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, Main2Activity.this, mCallbacks);
+        PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, NewUserActivity.this, mCallbacks);
     }
 
     private void funVerifyCode(String mCode) {
@@ -126,7 +126,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void funSignInWithPhoneAuth(PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential).addOnCompleteListener(Main2Activity.this, new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithCredential(credential).addOnCompleteListener(NewUserActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
@@ -136,7 +136,7 @@ public class Main2Activity extends AppCompatActivity {
                     UserModel userModel = new UserModel(xName,xAge,xGender,xNumber);
                     funStoreUserData(userModel);
                     mProgressDialog.dismiss();
-                    Intent intent = new Intent(Main2Activity.this,Main3Activity.class);
+                    Intent intent = new Intent(NewUserActivity.this, AddContactActivity.class);
                     intent.putExtra("xMode",xMode);
                     startActivity(intent);
                     finish();
@@ -146,7 +146,7 @@ public class Main2Activity extends AppCompatActivity {
                     if(task.getException() instanceof FirebaseAuthInvalidCredentialsException){
                         xError = "Invalid Code";
                     }
-                    Toast.makeText(Main2Activity.this,xError,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewUserActivity.this,xError,Toast.LENGTH_SHORT).show();
                 }
             }
         });
