@@ -58,7 +58,6 @@ public class NewUserActivity extends AppCompatActivity {
         genderField = findViewById(R.id.genderField);
         numberField = findViewById(R.id.numberField);
         codeField = findViewById(R.id.codeField);
-        loginButton = findViewById(R.id.loginButton);
         sendButton = findViewById(R.id.sendButton);
 
         xMode = getIntent().getIntExtra("xMode",2);

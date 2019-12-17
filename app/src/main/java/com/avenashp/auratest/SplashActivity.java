@@ -36,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(SplashActivity.this, UserActivity.class));
+                    startActivity(new Intent(SplashActivity.this, PhoneAuthActivity.class));
                     finish();
                 }
             }, TIME_OUT);
