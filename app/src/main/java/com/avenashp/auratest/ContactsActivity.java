@@ -26,23 +26,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    private RecyclerView contactRV;
-    private RecyclerView.Adapter contactRV_A;
-    private RecyclerView.LayoutManager contactRV_LM;
-    private ArrayList<ContactModel> contactModels;
-
+    private RecyclerView contactList;
+    private ArrayList<ContactModel> contactModel;
+    private ContactAdapter adapter;
     private String xUserId;
-    int xMode;
-    private ProgressDialog mProgressDialog;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private FirebaseDatabase mRootRef;
-    private DatabaseReference mCareSeekerRef,mCareGiverRef,mAllUsersRef,mContactRef,mChatManagerRef;
+    private FirebaseAuth fireAuth;
+    private FirebaseUser fireUser;
+    private DatabaseReference dbUserDetails,dbUserContacts;
 
     @SuppressLint("WrongConstant")
     @Override
@@ -50,82 +46,23 @@ public class ContactsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        contactModels = new ArrayList<>();
-        xMode = getIntent().getIntExtra("xMode",2);
+        funInit();
 
-        contactRV = findViewById(R.id.contactRV);
-        contactRV.setNestedScrollingEnabled(false);
-        contactRV.setHasFixedSize(false);
-        contactRV_LM = new LinearLayoutManager(getApplicationContext(), LinearLayout.VERTICAL,false);
-        contactRV.setLayoutManager(contactRV_LM);
-        contactRV_A = new ContactAdapter(contactModels);
-        contactRV.setAdapter(contactRV_A);
-
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        xUserId = mUser.getUid();
-        mRootRef = FirebaseDatabase.getInstance();
-        mProgressDialog = new ProgressDialog(ContactsActivity.this);
-        mCareSeekerRef = mRootRef.getReference("Care Seeker Details");
-        mCareGiverRef = mRootRef.getReference("Care Giver Details");
-        mAllUsersRef = mRootRef.getReference("All Users ID");
-        mChatManagerRef = mRootRef.getReference("Chats Manager");
-        if(xMode == 0) {
-            mContactRef = mCareSeekerRef.child(xUserId).child("Contacts");
-        }
-        else {
-            mContactRef = mCareGiverRef.child(xUserId).child("Contacts");
-        }
-        Log.i("############","Contact ref = " + mContactRef);
-
-        mProgressDialog.setMessage("Loading Contacts...");
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.show();
-        funShowContacts();
-
+        funReadContacts();
     }
 
-    private void funShowContacts() {
-        mContactRef.addChildEventListener(new ChildEventListener() {
+    private void funReadContacts() {
+        dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                contactModels.clear();
-                Log.i("############","On CHILD ADDED");
-                if(dataSnapshot.exists()) {
-                    Log.i("############", "snap exist");
-
-                    String Ln, Sn, Mn, Ci;
-                    //for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    Ln = dataSnapshot.child("longName").getValue().toString();
-                    Sn = dataSnapshot.child("shortName").getValue().toString();
-                    Mn = dataSnapshot.child("mobileNumber").getValue().toString();
-                    Ci = dataSnapshot.child("chatId").getValue().toString();
-
-                    Log.i("############", "contact " + Ln + Mn + Sn);
-
-                    ContactModel scm = new ContactModel(Sn, Ln, Mn, Ci);
-                    contactModels.add(scm);
-                    contactRV_A.notifyDataSetChanged();
-
-                    Log.i("############", "contact " + Ln + Mn + Sn);
-                    //}
-                    mProgressDialog.dismiss();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot snap : dataSnapshot.getChildren()){
+                        ContactModel cm = snap.getValue(ContactModel.class);
+                        contactModel.add(cm);
+                    }
+                    adapter = new ContactAdapter(contactModel);
+                    contactList.setAdapter(adapter);
                 }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
@@ -133,39 +70,20 @@ public class ContactsActivity extends AppCompatActivity {
 
             }
         });
-        /*mContactRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i("############","On CHILD ADDED");
-                if(dataSnapshot.exists()){
-                    Log.i("############","snap exist");
-
-                    String Ln,Sn,Mn,Ci;
-                    for(DataSnapshot snap : dataSnapshot.getChildren()){
-                        Ln = snap.child("longName").getValue().toString();
-                        Sn = snap.child("shortName").getValue().toString();
-                        Mn = snap.child("mobileNumber").getValue().toString();
-                        Ci = snap.child("chatId").getValue().toString();
-
-                        Log.i("############","contact " +Ln+Mn+Sn);
-
-                        ContactModel scm = new ContactModel(Sn,Ln,Mn,Ci);
-                        contactModels.add(scm);
-                        contactRV_A.notifyDataSetChanged();
-
-                        Log.i("############","contact " +Ln+Mn+Sn);
-                    }
-                    mProgressDialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });*/
     }
+
+    private void funInit() {
+        contactList = findViewById(R.id.contactList);
+        contactList.setHasFixedSize(true);
+        contactList.setLayoutManager(new LinearLayoutManager(this));
+        contactModel = new ArrayList<>();
+        fireAuth = FirebaseAuth.getInstance();
+        fireUser = fireAuth.getCurrentUser();
+        xUserId = fireUser.getUid();
+        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+        dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

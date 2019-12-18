@@ -62,10 +62,10 @@ public class AddContactActivity extends AppCompatActivity {
 
                     if(number.equals(usernum)){
 
-                        dbUserContacts.child(userid).child("short name").setValue(shortField.getText().toString());
-                        dbUserContacts.child(userid).child("long name").setValue(longField.getText().toString());
+                        dbUserContacts.child(userid).child("short_name").setValue(shortField.getText().toString());
+                        dbUserContacts.child(userid).child("long_name").setValue(longField.getText().toString());
                         dbUserContacts.child(userid).child("number").setValue(number);
-                        dbUserContacts.child(userid).child("chat id").setValue(UUID.randomUUID().toString());
+                        dbUserContacts.child(userid).child("chat_id").setValue(UUID.randomUUID().toString());
 
                         longField.setText("");
                         shortField.setText("");
