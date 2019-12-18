@@ -57,7 +57,7 @@ public class NewUserActivity extends AppCompatActivity {
                         xMode = "Care Giver";
                         break;
                 }
-                funSaveDataToFireBase();
+                funSaveUserDetails();
                 mProgressDialog.dismiss();
                 startActivity(new Intent(NewUserActivity.this,AddContactActivity.class));
                 finish();
@@ -65,7 +65,7 @@ public class NewUserActivity extends AppCompatActivity {
         });
     }
 
-    private void funSaveDataToFireBase() {
+    private void funSaveUserDetails() {
         dbUserDetails.child(xUserId).child("name").setValue(nameField.getText().toString());
         dbUserDetails.child(xUserId).child("age").setValue(ageField.getText().toString());
         dbUserDetails.child(xUserId).child("country").setValue(countryField.getText().toString());

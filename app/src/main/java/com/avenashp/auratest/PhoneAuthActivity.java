@@ -121,7 +121,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                 finish();
                             }
                             else{
-                                funSaveDataToFireBase(xNumber);
+                                funSaveUserNumber(xNumber);
                                 mProgressDialog.dismiss();
                                 startActivity(new Intent(PhoneAuthActivity.this,NewUserActivity.class));
                                 finish();
@@ -145,7 +145,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
-    private void funSaveDataToFireBase(String number) {
+    private void funSaveUserNumber(String number) {
         dbUserDetails.child(xUserId).child("number").setValue(number);
     }
 
