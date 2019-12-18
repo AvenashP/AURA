@@ -21,51 +21,37 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AddContactActivity extends AppCompatActivity {
 
-    private Button addButton,nextButton;
+    private Button addButton,doneButton;
     private TextInputEditText longField,shortField,numberField;
-    private String xLongName,xShortName,xMobileNumber,xUserId;
-    int xMode,FLAG=0;
-    private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
-    private FirebaseDatabase mRootRef;
-    private DatabaseReference mCareSeekerRef,mCareGiverRef,mAllUsersRef,mContactRef,mChatManagerRef;
+    private String xUserId;
+    private FirebaseAuth fireAuth;
+    private FirebaseUser fireUser;
+    private DatabaseReference dbUserDetails,dbUserContacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
-        xMode = getIntent().getIntExtra("xMode",2);
-
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-        xUserId = mUser.getUid();
-        mRootRef = FirebaseDatabase.getInstance();
-
-        mCareSeekerRef = mRootRef.getReference("Care Seeker Details");
-        mCareGiverRef = mRootRef.getReference("Care Giver Details");
-        mAllUsersRef = mRootRef.getReference("All Users ID");
-        mChatManagerRef = mRootRef.getReference("Chats Manager");
-        if(xMode == 0) {
-            mContactRef = mCareSeekerRef.child(xUserId).child("Contacts");
-        }
-        else {
-            mContactRef = mCareGiverRef.child(xUserId).child("Contacts");
-        }
         addButton = findViewById(R.id.addButton);
-        nextButton = findViewById(R.id.nextButton);
+        doneButton = findViewById(R.id.nextButton);
         longField = findViewById(R.id.longField);
         shortField = findViewById(R.id.shortField);
         numberField = findViewById(R.id.numberField);
+        fireAuth = FirebaseAuth.getInstance();
+        fireUser = fireAuth.getCurrentUser();
+        xUserId = fireUser.getUid();
+        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+        dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
 
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                xLongName = longField.getText().toString();
-                xShortName = shortField.getText().toString();
-                xMobileNumber = numberField.getText().toString();
-
-                mAllUsersRef.addValueEventListener(new ValueEventListener() {
+                String number = numberField.getText().toString();
+                dbUserContacts.child("short name").setValue(shortField.getText().toString());
+                dbUserContacts.child("long name").setValue(longField.getText().toString());
+                dbUserDetails.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snap : dataSnapshot.getChildren())
@@ -114,7 +100,7 @@ public class AddContactActivity extends AppCompatActivity {
                 });
             }
         });
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddContactActivity.this, ContactsActivity.class);
@@ -123,11 +109,5 @@ public class AddContactActivity extends AppCompatActivity {
                 finish();
             }
         });
-    }
-    @Override
-    public void onBackPressed() {
-        finish();
-        startActivity(new Intent(AddContactActivity.this, ContactsActivity.class));
-        super.onBackPressed();
     }
 }
