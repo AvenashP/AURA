@@ -34,22 +34,69 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/genderField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Gender" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/countryField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Country" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gender :"
+        android:textSize="18sp"/>
+
+    <RadioGroup
+        android:id="@+id/genderRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/maleRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Male" />
+
+        <RadioButton
+            android:id="@+id/femaleRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Female" />
+        <RadioButton
+            android:id="@+id/otherRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Others" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="User Mode :"
+        android:textSize="18sp"/>
+    <RadioGroup
+        android:id="@+id/modeRadio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/mode1Radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Care Seeker" />
+
+        <RadioButton
+            android:id="@+id/mode2Radio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Care Giver" />
+    </RadioGroup>
 
     <Button
         android:id="@+id/nextButton"

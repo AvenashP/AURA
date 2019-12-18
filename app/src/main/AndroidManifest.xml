@@ -34,9 +34,6 @@
             android:name=".AddContactActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".UserActivity"
-            android:launchMode="singleTask" />
-        <activity
             android:name=".NewUserActivity"
             android:launchMode="singleTask" />
     </application>

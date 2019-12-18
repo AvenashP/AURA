@@ -59,6 +59,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
                 else{
                     xNumber = numberField.getText().toString();
                     Toast.makeText(PhoneAuthActivity.this,"Sending Code",Toast.LENGTH_LONG).show();
+
+                    //  SEND VERIFICATION CODE TO PHONE NUMBER
                     PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, PhoneAuthActivity.this, mCallbacks);
                 }
             }
@@ -119,7 +121,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                 finish();
                             }
                             else{
-                                dbUserDetails.child(xUserId).child("number").setValue(xNumber);
+                                funSaveDataFireBase(xNumber);
                                 mProgressDialog.dismiss();
                                 startActivity(new Intent(PhoneAuthActivity.this,NewUserActivity.class));
                                 finish();
@@ -141,6 +143,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
         });
         mProgressDialog.setMessage("Verifying Code..!");
         mProgressDialog.show();
+    }
+
+    private void funSaveDataFireBase(String number) {
+        dbUserDetails.child(xUserId).child("number").setValue(number);
     }
 
     private void funInit() {
