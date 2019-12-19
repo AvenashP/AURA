@@ -35,6 +35,7 @@ public class ContactsActivity extends AppCompatActivity {
     private RecyclerView contactList;
     private ArrayList<ContactModel> contactModel;
     private ContactAdapter adapter;
+    private ProgressDialog mProgressDialog;
     private String xUserId;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -52,6 +53,8 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     private void funReadContacts() {
+        mProgressDialog.setMessage("Loading Contacts...");
+        mProgressDialog.show();
         dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -63,6 +66,7 @@ public class ContactsActivity extends AppCompatActivity {
                     adapter = new ContactAdapter(contactModel);
                     contactList.setAdapter(adapter);
                 }
+                mProgressDialog.dismiss();
             }
 
             @Override
@@ -73,6 +77,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     private void funInit() {
+        mProgressDialog = new ProgressDialog(ContactsActivity.this);
         contactList = findViewById(R.id.contactList);
         contactList.setHasFixedSize(true);
         contactList.setLayoutManager(new LinearLayoutManager(this));
