@@ -62,7 +62,9 @@ public class AddContactActivity extends AppCompatActivity {
                     String userid = snap.getKey();
                     String usernum = snap.child("number").getValue().toString();
                     if(number.equals(usernum)){
-                        String chatid = UUID.randomUUID().toString();
+
+                        String chatid = UUID.randomUUID().toString().replace("-","");
+
                         dbUserContacts.child(userid).child("short_name").setValue(sname);
                         dbUserContacts.child(userid).child("long_name").setValue(lname);
                         dbUserContacts.child(userid).child("number").setValue(number);
