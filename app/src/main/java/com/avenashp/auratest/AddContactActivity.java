@@ -38,8 +38,10 @@ public class AddContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String number = numberField.getText().toString();
+                String sname = shortField.getText().toString();
+                String lname = longField.getText().toString();
 
-                funSaveUserContact(number);
+                funSaveUserContact(number,sname,lname);
             }
         });
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -51,21 +53,20 @@ public class AddContactActivity extends AppCompatActivity {
         });
     }
 
-    private void funSaveUserContact(final String number) {
-        dbUserDetails.addValueEventListener(new ValueEventListener() {
+    private void funSaveUserContact(final String number, final String sname, final String lname) {
+        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren())
                 {
                     String userid = snap.getKey();
                     String usernum = snap.child("number").getValue().toString();
-
                     if(number.equals(usernum)){
-
-                        dbUserContacts.child(userid).child("short_name").setValue(shortField.getText().toString());
-                        dbUserContacts.child(userid).child("long_name").setValue(longField.getText().toString());
+                        String chatid = UUID.randomUUID().toString();
+                        dbUserContacts.child(userid).child("short_name").setValue(sname);
+                        dbUserContacts.child(userid).child("long_name").setValue(lname);
                         dbUserContacts.child(userid).child("number").setValue(number);
-                        dbUserContacts.child(userid).child("chat_id").setValue(UUID.randomUUID().toString());
+                        dbUserContacts.child(userid).child("chat_id").setValue(chatid);
 
                         longField.setText("");
                         shortField.setText("");

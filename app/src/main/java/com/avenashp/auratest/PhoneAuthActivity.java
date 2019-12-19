@@ -156,7 +156,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(PhoneAuthActivity.this);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
-        xUserId = fireUser.getUid();
+        if(fireUser != null)
+            xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
     }
 }

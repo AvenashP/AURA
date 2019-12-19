@@ -4,6 +4,10 @@ public class ContactModel {
 
     private String short_name, long_name, number, chat_id;
 
+    public ContactModel() {
+
+    }
+
     public ContactModel(String short_name, String long_name, String number, String chat_id) {
         this.short_name = short_name;
         this.long_name = long_name;
