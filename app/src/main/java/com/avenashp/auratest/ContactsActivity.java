@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity implements ContactAdapter.OnContactClickListener{
 
     private RecyclerView contactList;
     private ArrayList<ContactModel> contactModel;
@@ -63,7 +63,7 @@ public class ContactsActivity extends AppCompatActivity {
                         ContactModel cm = snap.getValue(ContactModel.class);
                         contactModel.add(cm);
                     }
-                    adapter = new ContactAdapter(contactModel);
+                    adapter = new ContactAdapter(contactModel,ContactsActivity.this);
                     contactList.setAdapter(adapter);
                 }
                 mProgressDialog.dismiss();
@@ -89,6 +89,15 @@ public class ContactsActivity extends AppCompatActivity {
         dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
     }
 
+    @Override
+    public void onContactClick(int position) {
+        ContactModel cml = contactModel.get(position);
+        String chatid = cml.getChat_id();
+        Log.i("#######", "onContactClick: "+chatid);
+        Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
+        intent.putExtra("chatid",chatid);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,4 +146,6 @@ public class ContactsActivity extends AppCompatActivity {
         System.exit(0);
         super.onBackPressed();
     }
+
+
 }

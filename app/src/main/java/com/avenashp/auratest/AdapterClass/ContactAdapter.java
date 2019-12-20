@@ -16,9 +16,11 @@ import java.util.ArrayList;
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactViewHolder> {
 
     private ArrayList<ContactModel> contactModels;
+    private OnContactClickListener onContactListener;
 
-    public ContactAdapter(ArrayList<ContactModel> contactModels) {
+    public ContactAdapter(ArrayList<ContactModel> contactModels, OnContactClickListener onContactClickListener) {
         this.contactModels = contactModels;
+        this.onContactListener = onContactClickListener;
     }
 
     @NonNull
@@ -28,7 +30,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutView.setLayoutParams(lp);
 
-        return new ContactViewHolder(layoutView);
+        return new ContactViewHolder(layoutView,onContactListener);
     }
 
     @Override
@@ -44,17 +46,30 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
         return contactModels.size();
     }
 
-    public class ContactViewHolder extends RecyclerView.ViewHolder {
+    public class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView contactShort,contactLong,contactNumber;
         private LinearLayout contactLayout;
+        OnContactClickListener onContactClickListener;
 
-        private ContactViewHolder(View view){
+        private ContactViewHolder(View view, OnContactClickListener onContactClickListener){
             super(view);
             contactShort = view.findViewById(R.id.contactShort);
             contactLong = view.findViewById(R.id.contactLong);
             contactNumber = view.findViewById(R.id.contactNumber);
             contactLayout = view.findViewById(R.id.contactLayout);
+            this.onContactClickListener = onContactClickListener;
+
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            onContactClickListener.onContactClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnContactClickListener{
+        void onContactClick(int position);
     }
 }
