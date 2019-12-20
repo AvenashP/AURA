@@ -7,28 +7,14 @@
     android:orientation="vertical"
     tools:context=".ChatsActivity">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/msgLayout"
-        android:orientation="vertical"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/prevMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="18sp"
-            android:gravity="center"/>
-        <TextView
-            android:id="@+id/currMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="28sp"
-            android:layout_marginTop="30dp"
-            android:gravity="center"/>
-    </LinearLayout>
+        android:layout_marginBottom="10dp"
+        android:scrollbars="vertical">
+    </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/msgLayout"

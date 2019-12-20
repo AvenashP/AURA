@@ -59,7 +59,9 @@ public class NewUserActivity extends AppCompatActivity {
                 }
                 funSaveUserDetails();
                 mProgressDialog.dismiss();
-                startActivity(new Intent(NewUserActivity.this,AddContactActivity.class));
+                Intent intent =new Intent(NewUserActivity.this,AddContactActivity.class);
+                intent.putExtra("xMode",xMode);
+                startActivity(intent);
                 finish();
             }
         });

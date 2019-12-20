@@ -34,7 +34,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
 
     private RecyclerView contactList;
     private ArrayList<ContactModel> contactModel;
-    private ContactAdapter adapter;
+    private ContactAdapter contactAdapter;
     private ProgressDialog mProgressDialog;
     private String xUserId;
     private FirebaseAuth fireAuth;
@@ -60,11 +60,12 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     for (DataSnapshot snap : dataSnapshot.getChildren()){
+                        Log.i("##############", "contacts: "+snap);
                         ContactModel cm = snap.getValue(ContactModel.class);
                         contactModel.add(cm);
                     }
-                    adapter = new ContactAdapter(contactModel,ContactsActivity.this);
-                    contactList.setAdapter(adapter);
+                    contactAdapter = new ContactAdapter(contactModel,ContactsActivity.this);
+                    contactList.setAdapter(contactAdapter);
                 }
                 mProgressDialog.dismiss();
             }

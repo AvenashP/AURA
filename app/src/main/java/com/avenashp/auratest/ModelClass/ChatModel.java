@@ -1,21 +1,17 @@
 package com.avenashp.auratest.ModelClass;
 
 public class ChatModel {
-    String userid,message,date,time;
+    String message, date, time, sender;
 
-    public ChatModel(String userid, String message, String date, String time) {
-        this.userid = userid;
+    public ChatModel(){
+
+    }
+
+    public ChatModel(String message, String time, String sender, String date) {
         this.message = message;
-        this.date = date;
         this.time = time;
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
+        this.sender = sender;
+        this.date = date;
     }
 
     public String getMessage() {
@@ -26,19 +22,27 @@ public class ChatModel {
         this.message = message;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getTime() {
         return time;
     }
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

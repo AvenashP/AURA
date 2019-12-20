@@ -32,7 +32,7 @@ public class ExistingUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_existing_user);
 
         funInit();
-        funReadDataFromFireBase();
+        funReadUserDetails();
 
         continueBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +43,7 @@ public class ExistingUserActivity extends AppCompatActivity {
         });
     }
 
-    private void funReadDataFromFireBase() {
+    private void funReadUserDetails() {
         dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
