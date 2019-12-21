@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AddContactActivity extends AppCompatActivity {
 
+    private static final String TAG = "❌❌❌❌❌";
     private Button addButton,doneButton;
     private TextInputEditText longField,shortField,numberField;
     private String xUserId,xMode;

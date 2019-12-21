@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ExistingUserActivity extends AppCompatActivity {
 
+    private static final String TAG = "❌❌❌❌❌";
     private TextView name,age,gender,country,usermode;
     private Button continueBt;
     private String xUserId;

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity implements ContactAdapter.OnContactClickListener{
 
+    private static final String TAG = "❌❌❌❌❌";
     private RecyclerView contactList;
     private ArrayList<ContactModel> contactModel;
     private ContactAdapter contactAdapter;

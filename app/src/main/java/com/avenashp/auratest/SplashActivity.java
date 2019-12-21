@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
 
+    private static final String TAG = "❌❌❌❌❌";
     public FirebaseAuth firebaseAuth;
     public int TIME_OUT = 1500;
 

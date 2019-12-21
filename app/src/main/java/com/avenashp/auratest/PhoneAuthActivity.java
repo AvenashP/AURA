@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
+    private static final String TAG = "❌❌❌❌❌";
     private TextInputEditText numberField, codeField;
     private Button sendButton;
     private ProgressDialog mProgressDialog;

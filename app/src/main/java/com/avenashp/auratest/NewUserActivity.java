@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NewUserActivity extends AppCompatActivity {
 
+    private static final String TAG = "❌❌❌❌❌";
     private TextInputEditText nameField,ageField,countryField;
     private RadioGroup modeRadio,genderRadio;
     private Button nextButton;

@@ -34,6 +34,7 @@ import java.util.Date;
 
 public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener{
 
+    private static final String TAG = "❌❌❌❌❌";
     private RecyclerView chatlist;
     private RecyclerView.LayoutManager chatlistLM;
     private TextInputEditText msgInput;
@@ -52,18 +53,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
 
         xChatid = getIntent().getExtras().getString("chatid");
 
-        sendButton = findViewById(R.id.sendButton);
-        msgInput = findViewById(R.id.msgInput);
-        chatModels = new ArrayList<>();
-        chatlist = findViewById(R.id.chatlist);
-        chatlist.setHasFixedSize(true);
-        chatlistLM = new LinearLayoutManager(this);
-        chatlist.setLayoutManager(chatlistLM);
-        fireAuth = FirebaseAuth.getInstance();
-        fireUser = fireAuth.getCurrentUser();
-        xUserId = fireUser.getUid();
-        dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
-        dbCurrentChat = dbChatManager.child(xChatid);
+        funInit();
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +75,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()){
-                    Log.i("##########", "CHAT: "+dataSnapshot);
+                    Log.i(TAG, "CHAT: "+dataSnapshot);
                     ChatModel chm1 = dataSnapshot.getValue(ChatModel.class);
                     chatModels.add(chm1);
                 }
@@ -116,9 +106,23 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         });
     }
 
-
     @Override
     public void onChatClick(int position) {
         //DO SOMETHING
+    }
+
+    private void funInit() {
+        sendButton = findViewById(R.id.sendButton);
+        msgInput = findViewById(R.id.msgInput);
+        chatModels = new ArrayList<>();
+        chatlist = findViewById(R.id.chatlist);
+        chatlist.setHasFixedSize(true);
+        chatlistLM = new LinearLayoutManager(this);
+        chatlist.setLayoutManager(chatlistLM);
+        fireAuth = FirebaseAuth.getInstance();
+        fireUser = fireAuth.getCurrentUser();
+        xUserId = fireUser.getUid();
+        dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
+        dbCurrentChat = dbChatManager.child(xChatid);
     }
 }
