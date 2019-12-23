@@ -1,10 +1,12 @@
 package com.avenashp.auratest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,7 +17,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.avenashp.auratest.ModelClass.ChatModel;
+import com.avenashp.auratest.ModelClass.ContactModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +45,10 @@ public class MorseChatActivity extends AppCompatActivity {
     private String mMsg,tMsg,xName="",xMessage="",ttMsg;
     private int SPACE=0,index1=0,index2=0;
     private Map<String, String> xDict = new HashMap();
+    private String xUserId,xChatid,xDate,xTime;
+    private FirebaseAuth fireAuth;
+    private FirebaseUser fireUser;
+    private DatabaseReference dbUserDetails,dbUserContacts,dbChatManager,dbCurrentChat;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -45,6 +64,12 @@ public class MorseChatActivity extends AppCompatActivity {
         Arrays.fill(str,"");
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         morseletter.setVisibility(TextView.INVISIBLE);
+        fireAuth = FirebaseAuth.getInstance();
+        fireUser = fireAuth.getCurrentUser();
+        xUserId = fireUser.getUid();
+        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+        dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
+        dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
 
 
         funCreateDictionary();
@@ -181,16 +206,50 @@ public class MorseChatActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                xName = "";
+                xMessage = "";
                 ttMsg = textmsg.getText().toString();
                 char[] chars = ttMsg.toCharArray();
-                for(int i=0;i<chars.length;i++){
-                    if(i<2){
-                        xName = xName + chars[i];
-                    }
-                    else{
-                        xMessage = xMessage + chars[i];
-                    }
+                int n = chars.length;
+                xName = xName + chars[n-2] + chars[n-1];
+                for(int i=0;i<n-2;i++){
+                    xMessage = xMessage + chars[i];
                 }
+                Arrays.fill(ch,"");
+                Arrays.fill(str,"");
+                index1=0;
+                index2=0;
+                morseletter.setText("");
+                Log.i(TAG, "onDoubleTap: "+xName+" "+xMessage);
+                dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            for(DataSnapshot snap: dataSnapshot.getChildren()){
+                                Log.i(TAG, "onDataChange: "+snap);
+                                ContactModel cm = snap.getValue(ContactModel.class);
+                                xChatid = cm.getChat_id();
+                                Log.i(TAG, "onDataChange 1: "+xChatid+" and "+cm.getShort_name()+" SPACE "+xName);
+                                if(cm.getShort_name().equals(xName)){
+                                    xChatid = cm.getChat_id();
+                                    Log.i(TAG, "onDataChange 1: "+xChatid);
+                                    xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+                                    xTime = new SimpleDateFormat("hh:mm a").format(new Date());
+
+                                    ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate);
+                                    dbChatManager.child(xChatid).push().setValue(chm);
+                                    vibrator.vibrate(800);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 return true;
             }
 
