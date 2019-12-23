@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.avenashp.auratest.AdapterClass.ChatAdapter;
@@ -75,7 +76,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()){
-                    Log.i(TAG, "CHAT: "+dataSnapshot);
+                    Log.i(TAG, "SNAP_CHAT: "+dataSnapshot);
                     ChatModel chm1 = dataSnapshot.getValue(ChatModel.class);
                     chatModels.add(chm1);
                 }

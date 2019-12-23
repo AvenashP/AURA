@@ -22,7 +22,7 @@ public class ExistingUserActivity extends AppCompatActivity {
     private static final String TAG = "❌❌❌❌❌";
     private TextView name,age,gender,country,usermode;
     private Button continueBt;
-    private String xUserId;
+    private String xUserId,xMode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails;
@@ -49,11 +49,14 @@ public class ExistingUserActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(xUserId).exists()){
+
+                    xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
+
                     name.setText(dataSnapshot.child(xUserId).child("name").getValue().toString());
                     age.setText(dataSnapshot.child(xUserId).child("age").getValue().toString());
                     country.setText(dataSnapshot.child(xUserId).child("country").getValue().toString());
                     gender.setText(dataSnapshot.child(xUserId).child("gender").getValue().toString());
-                    usermode.setText(dataSnapshot.child(xUserId).child("mode").getValue().toString());
+                    usermode.setText(xMode);
                 }
             }
 

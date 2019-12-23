@@ -37,7 +37,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     private ArrayList<ContactModel> contactModel;
     private ContactAdapter contactAdapter;
     private ProgressDialog mProgressDialog;
-    private String xUserId;
+    private String xUserId,xMode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
@@ -50,6 +50,19 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
 
         funInit();
 
+        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
+                Log.i(TAG, "X_MODE = "+xMode);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         funReadContacts();
     }
 
@@ -61,7 +74,9 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     for (DataSnapshot snap : dataSnapshot.getChildren()){
-                        Log.i("##############", "contacts: "+snap);
+
+                        Log.i(TAG, "contacts: "+snap);
+
                         ContactModel cm = snap.getValue(ContactModel.class);
                         contactModel.add(cm);
                     }
@@ -95,10 +110,19 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     public void onContactClick(int position) {
         ContactModel cml = contactModel.get(position);
         String chatid = cml.getChat_id();
-        Log.i("#######", "onContactClick: "+chatid);
-        Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
-        intent.putExtra("chatid",chatid);
-        startActivity(intent);
+
+        Log.i(TAG, "onContactClick: "+chatid);
+
+        if(xMode.equals("Care Seeker")){
+            Intent intent = new Intent(ContactsActivity.this,MorseChatActivity.class);
+            intent.putExtra("chatid",chatid);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
+            intent.putExtra("chatid",chatid);
+            startActivity(intent);
+        }
     }
 
     @Override

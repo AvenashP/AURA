@@ -34,7 +34,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
     private TextInputEditText numberField, codeField;
-    private Button sendButton;
+    private Button sendButton,loginButton;
     private ProgressDialog mProgressDialog;
     private String xVerificationId,xCode,xUserId,xNumber;
     private boolean FLAG = false;
@@ -54,30 +54,33 @@ public class PhoneAuthActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(FLAG){
-                    funVerifyCode(xCode);
-                }
-                else{
-                    xNumber = numberField.getText().toString();
-                    Toast.makeText(PhoneAuthActivity.this,"Sending Code",Toast.LENGTH_LONG).show();
+                xNumber = numberField.getText().toString();
+                //Toast.makeText(PhoneAuthActivity.this,"Sending Code",Toast.LENGTH_LONG).show();
+                mProgressDialog.setMessage("Sending Code...");
+                mProgressDialog.show();
 
-                    //  SEND VERIFICATION CODE TO PHONE NUMBER
-                    PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, PhoneAuthActivity.this, mCallbacks);
-                }
+                //  SEND VERIFICATION CODE TO PHONE NUMBER
+                PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, PhoneAuthActivity.this, mCallbacks);
+            }
+        });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                xCode  = codeField.getText().toString();
+                funVerifyCode(xCode);
             }
         });
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                mProgressDialog.dismiss();
                 xCode = phoneAuthCredential.getSmsCode();
                 if (xCode != null) {
                     codeField.setText(xCode);
                     funVerifyCode(xCode);
                 }
                 else{
-                    sendButton.setText("Login");
-                    FLAG = true;
                     Toast.makeText(PhoneAuthActivity.this,"enter the code",Toast.LENGTH_SHORT).show();
                 }
             }
@@ -154,6 +157,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
         numberField = findViewById(R.id.numberField);
         codeField = findViewById(R.id.codeField);
         sendButton = findViewById(R.id.sendButton);
+        loginButton = findViewById(R.id.loginButton);
         mProgressDialog = new ProgressDialog(PhoneAuthActivity.this);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
