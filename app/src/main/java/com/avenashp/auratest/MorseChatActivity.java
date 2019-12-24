@@ -43,7 +43,7 @@ public class MorseChatActivity extends AppCompatActivity {
     private String[] ch = new String[1000];
     private String[] str = new String[1000];
     private String mMsg,tMsg,xName="",xMessage="",ttMsg;
-    private int SPACE=0,index1=0,index2=0;
+    private int SPACE=0,index1=0,index2=0,DSPACE=0;
     private Map<String, String> xDict = new HashMap();
     private String xUserId,xChatid,xDate,xTime;
     private FirebaseAuth fireAuth;
@@ -109,7 +109,7 @@ public class MorseChatActivity extends AppCompatActivity {
             }
 
             public void onSwipeRight() {
-                if(!morsemsg.getText().toString().equals("")){
+                if(!morsemsg.getText().toString().equals("") && DSPACE!=1){
                     vibrator.vibrate(25);
                     if(SPACE == 0){
                         ch[++index1] = "";
@@ -119,6 +119,7 @@ public class MorseChatActivity extends AppCompatActivity {
                     else {
                         ch[index1++] = " ";
                         str[index2++] = " ";
+                        DSPACE = 1;
                     }
                     morseletter.setText("");
                     morsemsg.append(" ");
@@ -133,27 +134,41 @@ public class MorseChatActivity extends AppCompatActivity {
                         morseletter.setText("");
                     }
                     else{
-                        ch[index1] = "";
-                        str[index2] = "";
                         while(index1 > 0){
-                            if(ch[index1].equals("") || ch[index1].equals(" ")){
-                                ch[index1] = "";
+                            if(ch[index1].equals("")){
                                 index1--;
                             }
-                            else{
+                            char c = ch[index1].charAt(0);
+                            if(c>=33 && c<=122){
+                                ch[index1] = "";
                                 break;
                             }
+                            else{
+                                ch[index1]="";
+                                index1--;
+                            }
                         }
-                        while(index2 > 0){
-                            if(str[index2].equals("") || str[index2].equals(" ")){
+                        while(index2 >= 0){
+                            Log.i(TAG, "START "+index2);
+                            if(str[index2].equals("")){
+                                Log.i(TAG, "CURRENT BOX closed");
+                                index2--;
+                            }
+                            String s = getKey(xDict,str[index2]);
+                            if(s==null){
+                                Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
                                 str[index2] = "";
                                 index2--;
                             }
                             else{
+                                Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
+                                str[index2]="";
                                 break;
                             }
+                            Log.i(TAG, "END "+index2);
                         }
                         morseletter.setText(str[index2]);
+
                     }
                 }
             }
@@ -192,6 +207,7 @@ public class MorseChatActivity extends AppCompatActivity {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 SPACE=0;
+                DSPACE=0;
                 morseletter.append("•");
                 vibrator.vibrate(100);
                 return true;
@@ -200,6 +216,7 @@ public class MorseChatActivity extends AppCompatActivity {
             @Override
             public void onLongPress(MotionEvent e) {
                 SPACE=0;
+                DSPACE=0;
                 morseletter.append("−");
                 vibrator.vibrate(300);
             }
@@ -290,7 +307,6 @@ public class MorseChatActivity extends AppCompatActivity {
     }
 
     private void funCreateDictionary() {
-        xDict.put(" ", " ");
         xDict.put("A", "•−");
         xDict.put("B", "−•••");
         xDict.put("C", "−•−•");
