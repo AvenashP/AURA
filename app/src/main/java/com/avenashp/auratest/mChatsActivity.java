@@ -208,7 +208,10 @@ public class mChatsActivity extends AppCompatActivity {
                 if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
                     xRecived = dataSnapshot.child("morse_code").getValue().toString();
                     Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
-
+                    char[] morsearr = xRecived.toCharArray();
+                    for(char c : morsearr){
+                        Log.i(TAG, "Moresarr: "+c);
+                    }
                 }
             }
 

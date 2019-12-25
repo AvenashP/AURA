@@ -80,14 +80,8 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private String funGetMorseCode(String xMessage) {
         char[] ch = xMessage.toCharArray();
         String str = "";
-        String sp;
+        String sp=" ";
         for(int i=0;i<ch.length;i++){
-            if(ch[i] == ' '){
-                sp = "  ";
-            }
-            else{
-                sp = " ";
-            }
             if(i == (ch.length) - 1){
                 sp="";
             }
@@ -133,6 +127,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     }
 
     private void funCreateDictionary() {
+        xDict.put(' ', "");
         xDict.put('A', "•−");
         xDict.put('B', "−•••");
         xDict.put('C', "−•−•");
