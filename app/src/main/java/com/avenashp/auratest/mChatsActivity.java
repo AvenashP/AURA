@@ -1,12 +1,13 @@
 package com.avenashp.auratest;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,14 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avenashp.auratest.ModelClass.ChatModel;
-import com.avenashp.auratest.ModelClass.ContactModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -34,27 +35,30 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MorseChatActivity extends AppCompatActivity {
+public class mChatsActivity extends AppCompatActivity {
 
-    private static final String TAG = "❌❌❌❌❌";
+    private static final String TAG = "❌SEEKER-CHAT❌";
     private TextView textmsg,morsemsg,morseletter;
     private LinearLayout touch;
     private Vibrator vibrator;
     private String[] ch = new String[1000];
     private String[] str = new String[1000];
-    private String mMsg,tMsg,xName="",xMessage="",ttMsg;
+    private String mMsg,tMsg,xMessage="",xRecived;
     private int SPACE=0,index1=0,index2=0,DSPACE=0;
     private Map<String, String> xDict = new HashMap();
-    private String xUserId,xChatid,xDate,xTime;
+    private String xUserId,xChatid,xDate,xTime,xMorseCode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
-    private DatabaseReference dbUserDetails,dbUserContacts,dbChatManager,dbCurrentChat;
+    private DatabaseReference dbUserDetails,dbChatManager;
+    private Query lastquery;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_morse_chat);
+        setContentView(R.layout.activity_m_chat);
+
+        xChatid = getIntent().getExtras().getString("chatid");
 
         textmsg = findViewById(R.id.textmsg);
         morsemsg = findViewById(R.id.morsemsg);
@@ -68,9 +72,8 @@ public class MorseChatActivity extends AppCompatActivity {
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
-        dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
         dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
-
+        lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
 
         funCreateDictionary();
 
@@ -104,8 +107,25 @@ public class MorseChatActivity extends AppCompatActivity {
         });
 
         touch.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @SuppressLint("SimpleDateFormat")
             public void onSwipeTop() {
-                Toast.makeText(getApplicationContext(), "Swiped top", Toast.LENGTH_SHORT).show();
+                xMessage = "";
+                xMessage = textmsg.getText().toString();
+                xMorseCode = morsemsg.getText().toString();
+                Arrays.fill(ch,"");
+                Arrays.fill(str,"");
+                index1=0;
+                index2=0;
+                morseletter.setText("");
+
+                //Log.i(TAG, "onSWIPE TOP: "+xMessage);
+
+                xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+                xTime = new SimpleDateFormat("hh:mm a").format(new Date());
+
+                ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
+                dbChatManager.child(xChatid).push().setValue(chm);
+                vibrator.vibrate(1000);
             }
 
             public void onSwipeRight() {
@@ -132,6 +152,8 @@ public class MorseChatActivity extends AppCompatActivity {
                     vibrator.vibrate(25);
                     if(index1 == 0){
                         morseletter.setText("");
+                        startActivity(new Intent(mChatsActivity.this,mContactsActivity.class));
+                        finish();
                     }
                     else{
                         while(index1 > 0){
@@ -179,6 +201,37 @@ public class MorseChatActivity extends AppCompatActivity {
             }
 
         });
+
+        lastquery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
+                    xRecived = dataSnapshot.child("morse_code").getValue().toString();
+                    Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     class OnSwipeTouchListener implements View.OnTouchListener {
@@ -189,6 +242,7 @@ public class MorseChatActivity extends AppCompatActivity {
             gestureDetector = new GestureDetector(ctx, new GestureListener());
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             return gestureDetector.onTouchEvent(event);
@@ -198,6 +252,7 @@ public class MorseChatActivity extends AppCompatActivity {
 
             private static final int SWIPE_THRESHOLD = 300;
             private static final int SWIPE_VELOCITY_THRESHOLD = 300;
+            private static final int SWIPE_THRESHOLD1 = 1000;
 
             @Override
             public boolean onDown(MotionEvent e) {
@@ -223,50 +278,6 @@ public class MorseChatActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                xName = "";
-                xMessage = "";
-                ttMsg = textmsg.getText().toString();
-                char[] chars = ttMsg.toCharArray();
-                int n = chars.length;
-                xName = xName + chars[n-2] + chars[n-1];
-                for(int i=0;i<n-2;i++){
-                    xMessage = xMessage + chars[i];
-                }
-                Arrays.fill(ch,"");
-                Arrays.fill(str,"");
-                index1=0;
-                index2=0;
-                morseletter.setText("");
-                Log.i(TAG, "onDoubleTap: "+xName+" "+xMessage);
-                dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            for(DataSnapshot snap: dataSnapshot.getChildren()){
-                                Log.i(TAG, "onDataChange: "+snap);
-                                ContactModel cm = snap.getValue(ContactModel.class);
-                                xChatid = cm.getChat_id();
-                                Log.i(TAG, "onDataChange 1: "+xChatid+" and "+cm.getShort_name()+" SPACE "+xName);
-                                if(cm.getShort_name().equals(xName)){
-                                    xChatid = cm.getChat_id();
-                                    Log.i(TAG, "onDataChange 1: "+xChatid);
-                                    xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-                                    xTime = new SimpleDateFormat("hh:mm a").format(new Date());
-
-                                    ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate);
-                                    dbChatManager.child(xChatid).push().setValue(chm);
-                                    vibrator.vibrate(800);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
                 return true;
             }
 
@@ -285,7 +296,7 @@ public class MorseChatActivity extends AppCompatActivity {
                             }
                             result = true;
                         }
-                    } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    } else if (Math.abs(diffY) > SWIPE_THRESHOLD1 && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffY > 0) {
                             onSwipeBottom();
                         } else {
@@ -305,6 +316,7 @@ public class MorseChatActivity extends AppCompatActivity {
         public void onSwipeTop() {}
         public void onSwipeBottom() {}
     }
+
 
     private void funCreateDictionary() {
         xDict.put("A", "•−");
@@ -362,6 +374,7 @@ public class MorseChatActivity extends AppCompatActivity {
         xDict.put("!", "−•−•−−");
         xDict.put("?", "••−−••");
     }
+
 
     private static <K, V> K getKey(Map<K, V> map, V value) {
         for (Map.Entry<K, V> entry : map.entrySet()) {

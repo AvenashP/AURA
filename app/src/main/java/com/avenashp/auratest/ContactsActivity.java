@@ -1,7 +1,6 @@
 package com.avenashp.auratest;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,13 +14,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.avenashp.auratest.AdapterClass.ContactAdapter;
 import com.avenashp.auratest.ModelClass.ContactModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,12 +29,12 @@ import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity implements ContactAdapter.OnContactClickListener{
 
-    private static final String TAG = "❌❌❌❌❌";
+    private static final String TAG = "❌GIVER-CONTACTS❌";
     private RecyclerView contactList;
     private ArrayList<ContactModel> contactModel;
     private ContactAdapter contactAdapter;
     private ProgressDialog mProgressDialog;
-    private String xUserId,xMode;
+    private String xUserId;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
@@ -49,19 +46,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
         setContentView(R.layout.activity_contacts);
 
         funInit();
-
-        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
-                Log.i(TAG, "X_MODE = "+xMode);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         funReadContacts();
     }
@@ -75,7 +59,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
                 if (dataSnapshot.exists()){
                     for (DataSnapshot snap : dataSnapshot.getChildren()){
 
-                        Log.i(TAG, "contacts: "+snap);
+                        //Log.i(TAG, "contacts: "+snap);
 
                         ContactModel cm = snap.getValue(ContactModel.class);
                         contactModel.add(cm);
@@ -111,18 +95,12 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
         ContactModel cml = contactModel.get(position);
         String chatid = cml.getChat_id();
 
-        Log.i(TAG, "onContactClick: "+chatid);
+        //Log.i(TAG, "onContactClick: "+chatid);
 
-        if(xMode.equals("Care Seeker")){
-            Intent intent = new Intent(ContactsActivity.this,MorseChatActivity.class);
-            intent.putExtra("chatid",chatid);
-            startActivity(intent);
-        }
-        else{
-            Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
-            intent.putExtra("chatid",chatid);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
+        intent.putExtra("chatid",chatid);
+        startActivity(intent);
+
     }
 
     @Override

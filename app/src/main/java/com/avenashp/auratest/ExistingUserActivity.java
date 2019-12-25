@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ExistingUserActivity extends AppCompatActivity {
 
-    private static final String TAG = "❌❌❌❌❌";
+    private static final String TAG = "❌EXISTING❌";
     private TextView name,age,gender,country,usermode;
     private Button continueBt;
     private String xUserId,xMode;
@@ -38,8 +38,14 @@ public class ExistingUserActivity extends AppCompatActivity {
         continueBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ExistingUserActivity.this,ContactsActivity.class));
-                finish();
+                if(xMode.equals("Care Seeker")){
+                    startActivity(new Intent(ExistingUserActivity.this,mContactsActivity.class));
+                    finish();
+                }
+                else{
+                    startActivity(new Intent(ExistingUserActivity.this,ContactsActivity.class));
+                    finish();
+                }
             }
         });
     }

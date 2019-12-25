@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".MorseChatActivity"></activity>
+        <activity android:name=".mContactsActivity"></activity>
+        <activity android:name=".mChatsActivity" />
         <activity android:name=".ExistingUserActivity" />
         <activity android:name=".PhoneAuthActivity" />
         <activity android:name=".ChatsActivity" />

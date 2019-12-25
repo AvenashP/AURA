@@ -32,20 +32,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener{
 
-    private static final String TAG = "❌❌❌❌❌";
+    private static final String TAG = "❌GIVER-CHAT❌";
     private RecyclerView chatlist;
     private RecyclerView.LayoutManager chatlistLM;
     private TextInputEditText msgInput;
     private Button sendButton;
     private ArrayList<ChatModel> chatModels;
     private ChatAdapter chatAdapter;
-    private String xMessage,xUserId,xChatid,xDate,xTime;
+    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbChatManager,dbCurrentChat;
+    private Map<Character, String> xDict = new HashMap();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +56,44 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         setContentView(R.layout.activity_chats);
 
         xChatid = getIntent().getExtras().getString("chatid");
+        funCreateDictionary();
 
         funInit();
 
         sendButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View view) {
                 xMessage = msgInput.getText().toString();
                 msgInput.setText("");
                 xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 xTime = new SimpleDateFormat("hh:mm a").format(new Date());
-
-                ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate);
+                xMorseCode = funGetMorseCode(xMessage);
+                //Log.i(TAG, "onClick: "+xMorseCode);
+                ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
                 dbChatManager.child(xChatid).push().setValue(chm);
             }
         });
         funReadChats();
+    }
+
+    private String funGetMorseCode(String xMessage) {
+        char[] ch = xMessage.toCharArray();
+        String str = "";
+        String sp;
+        for(int i=0;i<ch.length;i++){
+            if(ch[i] == ' '){
+                sp = "  ";
+            }
+            else{
+                sp = " ";
+            }
+            if(i == (ch.length) - 1){
+                sp="";
+            }
+            str = str + xDict.get(ch[i]) + sp;
+        }
+        return str;
     }
 
     private void funReadChats() {
@@ -105,6 +130,63 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
 
             }
         });
+    }
+
+    private void funCreateDictionary() {
+        xDict.put('A', "•−");
+        xDict.put('B', "−•••");
+        xDict.put('C', "−•−•");
+        xDict.put('D', "−••");
+        xDict.put('E', "•");
+        xDict.put('F', "••−•");
+        xDict.put('G', "−−•");
+        xDict.put('H', "••••");
+        xDict.put('I', "••");
+        xDict.put('J', "•−−−");
+        xDict.put('K', "−•−");
+        xDict.put('L', "•−••");
+        xDict.put('M', "−−");
+        xDict.put('N', "−•");
+        xDict.put('O', "−−−");
+        xDict.put('P', "•−−•");
+        xDict.put('Q', "−−•−");
+        xDict.put('R', "•−•");
+        xDict.put('S', "•••");
+        xDict.put('T', "−");
+        xDict.put('U', "••−");
+        xDict.put('V', "•••−");
+        xDict.put('W', "•−−");
+        xDict.put('X', "−••−");
+        xDict.put('Y', "−•−−");
+        xDict.put('Z', "−−••");
+
+        xDict.put('0', "−−−−−");
+        xDict.put('1', "•−−−−");
+        xDict.put('2', "••−−−");
+        xDict.put('3', "•••−−");
+        xDict.put('4', "••••−");
+        xDict.put('5', "•••••");
+        xDict.put('6', "−••••");
+        xDict.put('7', "−−•••");
+        xDict.put('8', "−−−••");
+        xDict.put('9', "−−−−•");
+
+        xDict.put('@', "•−−•−•");
+        xDict.put('_', "••−−•−");
+        xDict.put('&', "•−•••");
+        xDict.put('-', "−••••−");
+        xDict.put('=', "−•••−");
+        xDict.put('+', "•−•−•");
+        xDict.put('(', "−•−−•");
+        xDict.put(')', "−•−−•−");
+        xDict.put('/', "−••−•");
+        xDict.put('.', "•−•−•−");
+        xDict.put(',', "−−••−−");
+        xDict.put('`', "•−−−−•");
+        xDict.put(':', "−−−•••");
+        xDict.put(';', "−•−•−•");
+        xDict.put('!', "−•−•−−");
+        xDict.put('?', "••−−••");
     }
 
     @Override

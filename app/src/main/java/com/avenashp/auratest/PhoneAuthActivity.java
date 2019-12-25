@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -36,8 +37,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private TextInputEditText numberField, codeField;
     private Button sendButton,loginButton;
     private ProgressDialog mProgressDialog;
-    private String xVerificationId,xCode,xUserId,xNumber;
-    private boolean FLAG = false;
+    private String xVerificationId,xCode,xUserId,xNumber,xMode;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
