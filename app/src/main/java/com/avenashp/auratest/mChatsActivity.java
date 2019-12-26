@@ -171,23 +171,23 @@ public class mChatsActivity extends AppCompatActivity {
                             }
                         }
                         while(index2 >= 0){
-                            Log.i(TAG, "START "+index2);
+                            //Log.i(TAG, "START "+index2);
                             if(str[index2].equals("")){
-                                Log.i(TAG, "CURRENT BOX closed");
+                                //Log.i(TAG, "CURRENT BOX closed");
                                 index2--;
                             }
                             String s = getKey(xDict,str[index2]);
                             if(s==null){
-                                Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
+                                //Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
                                 str[index2] = "";
                                 index2--;
                             }
                             else{
-                                Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
+                                //Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
                                 str[index2]="";
                                 break;
                             }
-                            Log.i(TAG, "END "+index2);
+                            //Log.i(TAG, "END "+index2);
                         }
                         morseletter.setText(str[index2]);
 
@@ -197,7 +197,7 @@ public class mChatsActivity extends AppCompatActivity {
 
             public void onSwipeBottom() {
                 Toast.makeText(getApplicationContext(), "Swiped bottom", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "onSwipeBottom: ");
+                //Log.i(TAG, "onSwipeBottom: ");
             }
 
         });
@@ -209,9 +209,27 @@ public class mChatsActivity extends AppCompatActivity {
                     xRecived = dataSnapshot.child("morse_code").getValue().toString();
                     Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
                     char[] morsearr = xRecived.toCharArray();
-                    for(char c : morsearr){
-                        Log.i(TAG, "Moresarr: "+c);
+                    int n = morsearr.length;
+                    long[] vibro = new long[(n*2)+1];
+                    int in1=0,in2=0;
+                    vibro[in2++] = 0;
+                    while(in1 < n){
+                        if(morsearr[in1] == '•'){
+                            vibro[in2++] = 100;
+                        }
+                        else if(morsearr[in1] == '−'){
+                            vibro[in2++] = 300;
+                        }
+                        else if(morsearr[in1] == ' '){
+                            vibro[in2++] = 0;
+                        }
+                        vibro[in2++] = 500;
+                        in1++;
                     }
+                    for(long i : vibro){
+                        System.out.println("Java String array to String = "+i);
+                    }
+                    vibrator.vibrate(vibro,-1);
                 }
             }
 
@@ -371,7 +389,7 @@ public class mChatsActivity extends AppCompatActivity {
         xDict.put("/", "−••−•");
         xDict.put(".", "•−•−•−");
         xDict.put(",", "−−••−−");
-        xDict.put("`", "•−−−−•");
+        xDict.put("'", "•−−−−•");
         xDict.put(":", "−−−•••");
         xDict.put(";", "−•−•−•");
         xDict.put("!", "−•−•−−");

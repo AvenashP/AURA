@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avenashp.auratest.AdapterClass.ChatAdapter;
 import com.avenashp.auratest.AdapterClass.ChatAdapter;
@@ -64,20 +65,24 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View view) {
-                xMessage = msgInput.getText().toString();
-                msgInput.setText("");
+                xMessage = msgInput.getText().toString().toUpperCase();
                 xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 xTime = new SimpleDateFormat("hh:mm a").format(new Date());
-                xMorseCode = funGetMorseCode(xMessage);
-                //Log.i(TAG, "onClick: "+xMorseCode);
-                ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
-                dbChatManager.child(xChatid).push().setValue(chm);
+                xMorseCode = funConvertToMorseCode(xMessage);
+                if(xMorseCode == null){
+                    Toast.makeText(ChatsActivity.this,"INVALID CHARACTERS !",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
+                    dbChatManager.child(xChatid).push().setValue(chm);
+                    msgInput.setText("");
+                }
             }
         });
         funReadChats();
     }
 
-    private String funGetMorseCode(String xMessage) {
+    private String funConvertToMorseCode(String xMessage) {
         char[] ch = xMessage.toCharArray();
         String str = "";
         String sp=" ";
@@ -85,7 +90,12 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
             if(i == (ch.length) - 1){
                 sp="";
             }
-            str = str + xDict.get(ch[i]) + sp;
+            if(xDict.get(ch[i]) == null){
+                return null;
+            }
+            else{
+                str = str + xDict.get(ch[i]) + sp;
+            }
         }
         return str;
     }
@@ -177,7 +187,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         xDict.put('/', "−••−•");
         xDict.put('.', "•−•−•−");
         xDict.put(',', "−−••−−");
-        xDict.put('`', "•−−−−•");
+        xDict.put('\'', "•−−−−•");
         xDict.put(':', "−−−•••");
         xDict.put(';', "−•−•−•");
         xDict.put('!', "−•−•−−");

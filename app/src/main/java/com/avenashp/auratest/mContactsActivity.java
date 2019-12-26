@@ -73,6 +73,8 @@ public class mContactsActivity extends AppCompatActivity {
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
         dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
 
+        vibrator.vibrate(500);
+
         funCreateDictionary();
 
         morseletter.addTextChangedListener(new TextWatcher() {
@@ -106,7 +108,47 @@ public class mContactsActivity extends AppCompatActivity {
 
         touch.setOnTouchListener(new OnSwipeTouchListener(this) {
             public void onSwipeTop() {
-                Toast.makeText(getApplicationContext(), "Swiped top", Toast.LENGTH_SHORT).show();
+                xName = "";
+                xName = textmsg.getText().toString();
+                Arrays.fill(ch,"");
+                Arrays.fill(str,"");
+                index1=0;
+                index2=0;
+                morseletter.setText("");
+
+                dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            int EMPTY = 0;
+                            for(DataSnapshot snap: dataSnapshot.getChildren()){
+
+                                ContactModel cm = snap.getValue(ContactModel.class);
+
+                                if(cm.getShort_name().equals(xName)){
+                                    EMPTY = 0;
+                                    xChatid = cm.getChat_id();
+                                    Intent intent = new Intent(mContactsActivity.this, mChatsActivity.class);
+                                    intent.putExtra("chatid",xChatid);
+                                    startActivity(intent);
+                                    finish();
+                                    break;
+                                }
+                                else{
+                                    EMPTY = 1;
+                                }
+                            }
+                            if(EMPTY == 1){
+                                vibrator.vibrate(1000);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             public void onSwipeRight() {
@@ -176,7 +218,6 @@ public class mContactsActivity extends AppCompatActivity {
 
             public void onSwipeBottom() {
                 Toast.makeText(getApplicationContext(), "Swiped bottom", Toast.LENGTH_SHORT).show();
-                //Log.i(TAG, "onSwipeBottom: ");
             }
 
         });
@@ -200,6 +241,7 @@ public class mContactsActivity extends AppCompatActivity {
 
             private static final int SWIPE_THRESHOLD = 300;
             private static final int SWIPE_VELOCITY_THRESHOLD = 300;
+            private static final int SWIPE_THRESHOLD1 = 1000;
 
             @Override
             public boolean onDown(MotionEvent e) {
@@ -225,40 +267,7 @@ public class mContactsActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                xName = "";
-                xName = textmsg.getText().toString();
-                Arrays.fill(ch,"");
-                Arrays.fill(str,"");
-                index1=0;
-                index2=0;
-                morseletter.setText("");
-                //Log.i(TAG, "onDoubleTap: "+xName);
-                dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            for(DataSnapshot snap: dataSnapshot.getChildren()){
 
-                                ContactModel cm = snap.getValue(ContactModel.class);
-
-                                if(cm.getShort_name().equals(xName)){
-                                    vibrator.vibrate(1000);
-                                    xChatid = cm.getChat_id();
-                                    Intent intent = new Intent(mContactsActivity.this, mChatsActivity.class);
-                                    intent.putExtra("chatid",xChatid);
-                                    startActivity(intent);
-                                    finish();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
                 return true;
             }
 
@@ -277,7 +286,7 @@ public class mContactsActivity extends AppCompatActivity {
                             }
                             result = true;
                         }
-                    } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    } else if (Math.abs(diffY) > SWIPE_THRESHOLD1 && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffY > 0) {
                             onSwipeBottom();
                         } else {
@@ -350,7 +359,7 @@ public class mContactsActivity extends AppCompatActivity {
         xDict.put("/", "−••−•");
         xDict.put(".", "•−•−•−");
         xDict.put(",", "−−••−−");
-        xDict.put("`", "•−−−−•");
+        xDict.put("'", "•−−−−•");
         xDict.put(":", "−−−•••");
         xDict.put(";", "−•−•−•");
         xDict.put("!", "−•−•−−");
