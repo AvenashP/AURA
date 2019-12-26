@@ -48,8 +48,14 @@ public class AddContactActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+            if(xMode.equals("Care Seeker")){
+                startActivity(new Intent(AddContactActivity.this, mChatsActivity.class));
+                finish();
+            }
+            else{
                 startActivity(new Intent(AddContactActivity.this, ContactsActivity.class));
                 finish();
+            }
             }
         });
     }

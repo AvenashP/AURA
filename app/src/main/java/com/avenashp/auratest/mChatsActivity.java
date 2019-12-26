@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avenashp.auratest.ModelClass.ChatModel;
+import com.avenashp.auratest.ModelClass.ContactModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -38,7 +40,7 @@ import java.util.Map;
 public class mChatsActivity extends AppCompatActivity {
 
     private static final String TAG = "❌SEEKER-CHAT❌";
-    private TextView textmsg,morsemsg,morseletter;
+    private TextView textmsg,morsemsg,morseletter,contact;
     private LinearLayout touch;
     private Vibrator vibrator;
     private String[] ch = new String[1000];
@@ -46,11 +48,12 @@ public class mChatsActivity extends AppCompatActivity {
     private String mMsg,tMsg,xMessage="",xRecived;
     private int SPACE=0,index1=0,index2=0,DSPACE=0;
     private Map<String, String> xDict = new HashMap();
-    private String xUserId,xChatid,xDate,xTime,xMorseCode;
+    private String xUserId,xChatid,xDate,xTime,xMorseCode,xName;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
-    private DatabaseReference dbUserDetails,dbChatManager;
+    private DatabaseReference dbUserDetails,dbChatManager,dbUserContacts;
     private Query lastquery;
+    private Boolean CONTACT = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -58,11 +61,11 @@ public class mChatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_m_chat);
 
-        xChatid = getIntent().getExtras().getString("chatid");
 
         textmsg = findViewById(R.id.textmsg);
         morsemsg = findViewById(R.id.morsemsg);
         morseletter =findViewById(R.id.morseletter);
+        contact = findViewById(R.id.contact);
         touch = findViewById(R.id.touch);
         Arrays.fill(ch,"");
         Arrays.fill(str,"");
@@ -73,7 +76,7 @@ public class mChatsActivity extends AppCompatActivity {
         xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
         dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
-        lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
+        dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
 
         funCreateDictionary();
 
@@ -87,7 +90,7 @@ public class mChatsActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence cS, int i, int i1, int i2) {
 
                 if(getKey(xDict,cS.toString()) == null){
-                    ch[index1] = "";
+                    ch[index1] = " ";
                     str[index2] = morseletter.getText().toString();
                 }
                 else{
@@ -109,23 +112,70 @@ public class mChatsActivity extends AppCompatActivity {
         touch.setOnTouchListener(new OnSwipeTouchListener(this) {
             @SuppressLint("SimpleDateFormat")
             public void onSwipeTop() {
-                xMessage = "";
-                xMessage = textmsg.getText().toString();
-                xMorseCode = morsemsg.getText().toString();
-                Arrays.fill(ch,"");
-                Arrays.fill(str,"");
-                index1=0;
-                index2=0;
-                morseletter.setText("");
 
-                //Log.i(TAG, "onSWIPE TOP: "+xMessage);
+                Log.i(TAG, "onSwipeTop: "+CONTACT);
+                if(CONTACT){
+                    xMessage = "";
+                    xMessage = textmsg.getText().toString();
+                    xMorseCode = morsemsg.getText().toString();
+                    Arrays.fill(ch,"");
+                    Arrays.fill(str,"");
+                    index1=0;
+                    index2=0;
+                    morseletter.setText("");
 
-                xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
-                xTime = new SimpleDateFormat("hh:mm a").format(new Date());
+                    xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+                    xTime = new SimpleDateFormat("hh:mm a").format(new Date());
 
-                ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
-                dbChatManager.child(xChatid).push().setValue(chm);
-                vibrator.vibrate(1000);
+                    ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);
+                    dbChatManager.child(xChatid).push().setValue(chm);
+                    vibrator.vibrate(300);
+                }
+                else{
+                    xMessage = "";
+                    xMessage = textmsg.getText().toString();
+                    Arrays.fill(ch,"");
+                    Arrays.fill(str,"");
+                    index1=0;
+                    index2=0;
+                    morseletter.setText("");
+
+                    dbUserContacts.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                int EMPTY = 0;
+                                for(DataSnapshot snap: dataSnapshot.getChildren()){
+
+                                    ContactModel cm = snap.getValue(ContactModel.class);
+
+                                    if(cm.getShort_name().equals(xMessage)){
+                                        EMPTY = 0;
+                                        xChatid = cm.getChat_id();
+                                        xName = cm.getLong_name();
+                                        lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
+                                        Log.i(TAG, "CHAT ID: "+xChatid);
+                                        CONTACT = true;
+                                        contact.setText(xName);
+                                        funInvoke();
+                                        break;
+                                    }
+                                    else{
+                                        EMPTY = 1;
+                                    }
+                                }
+                                if(EMPTY == 1){
+                                    vibrator.vibrate(1000);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
 
             public void onSwipeRight() {
@@ -152,8 +202,6 @@ public class mChatsActivity extends AppCompatActivity {
                     vibrator.vibrate(25);
                     if(index1 == 0){
                         morseletter.setText("");
-                        startActivity(new Intent(mChatsActivity.this,mContactsActivity.class));
-                        finish();
                     }
                     else{
                         while(index1 > 0){
@@ -171,23 +219,23 @@ public class mChatsActivity extends AppCompatActivity {
                             }
                         }
                         while(index2 >= 0){
-                            //Log.i(TAG, "START "+index2);
+
                             if(str[index2].equals("")){
-                                //Log.i(TAG, "CURRENT BOX closed");
+
                                 index2--;
                             }
                             String s = getKey(xDict,str[index2]);
                             if(s==null){
-                                //Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
+
                                 str[index2] = "";
                                 index2--;
                             }
                             else{
-                                //Log.i(TAG, "onSwipeLeft: "+s+" "+str[index2]);
+
                                 str[index2]="";
                                 break;
                             }
-                            //Log.i(TAG, "END "+index2);
+
                         }
                         morseletter.setText(str[index2]);
 
@@ -196,63 +244,68 @@ public class mChatsActivity extends AppCompatActivity {
             }
 
             public void onSwipeBottom() {
-                Toast.makeText(getApplicationContext(), "Swiped bottom", Toast.LENGTH_SHORT).show();
-                //Log.i(TAG, "onSwipeBottom: ");
+                CONTACT = false;
+                contact.setText("");
+                vibrator.vibrate(1000);
             }
 
         });
 
-        lastquery.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
-                    xRecived = dataSnapshot.child("morse_code").getValue().toString();
-                    Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
-                    char[] morsearr = xRecived.toCharArray();
-                    int n = morsearr.length;
-                    long[] vibro = new long[(n*2)+1];
-                    int in1=0,in2=0;
-                    vibro[in2++] = 0;
-                    while(in1 < n){
-                        if(morsearr[in1] == '•'){
-                            vibro[in2++] = 100;
+        funInvoke();
+
+    }
+
+    private void funInvoke() {
+        if(CONTACT){
+            lastquery.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
+                        xRecived = dataSnapshot.child("morse_code").getValue().toString();
+                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
+                        char[] morsearr = xRecived.toCharArray();
+                        int n = morsearr.length;
+                        long[] vibro = new long[(n*2)+1];
+                        int in1=0,in2=0;
+                        vibro[in2++] = 0;
+                        while(in1 < n){
+                            if(morsearr[in1] == '•'){
+                                vibro[in2++] = 100;
+                            }
+                            else if(morsearr[in1] == '−'){
+                                vibro[in2++] = 300;
+                            }
+                            else if(morsearr[in1] == ' '){
+                                vibro[in2++] = 0;
+                            }
+                            vibro[in2++] = 500;
+                            in1++;
                         }
-                        else if(morsearr[in1] == '−'){
-                            vibro[in2++] = 300;
-                        }
-                        else if(morsearr[in1] == ' '){
-                            vibro[in2++] = 0;
-                        }
-                        vibro[in2++] = 500;
-                        in1++;
+                        vibrator.vibrate(vibro,-1);
                     }
-                    for(long i : vibro){
-                        System.out.println("Java String array to String = "+i);
-                    }
-                    vibrator.vibrate(vibro,-1);
                 }
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            }
+                }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     class OnSwipeTouchListener implements View.OnTouchListener {
@@ -273,7 +326,7 @@ public class mChatsActivity extends AppCompatActivity {
 
             private static final int SWIPE_THRESHOLD = 300;
             private static final int SWIPE_VELOCITY_THRESHOLD = 300;
-            private static final int SWIPE_THRESHOLD1 = 1000;
+            private static final int SWIPE_THRESHOLD1 = 600;
 
             @Override
             public boolean onDown(MotionEvent e) {

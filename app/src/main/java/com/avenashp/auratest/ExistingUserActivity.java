@@ -39,7 +39,7 @@ public class ExistingUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(xMode.equals("Care Seeker")){
-                    startActivity(new Intent(ExistingUserActivity.this,mContactsActivity.class));
+                    startActivity(new Intent(ExistingUserActivity.this,mChatsActivity.class));
                     finish();
                 }
                 else{
