@@ -38,7 +38,7 @@ public class ExistingUserActivity extends AppCompatActivity {
         continueBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(xMode.equals("Care Seeker")){
+                if(xMode.equals("CARE SEEKER")){
                     startActivity(new Intent(ExistingUserActivity.this,mChatsActivity.class));
                     finish();
                 }
@@ -57,7 +57,6 @@ public class ExistingUserActivity extends AppCompatActivity {
                 if(dataSnapshot.child(xUserId).exists()){
 
                     xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
-
                     name.setText(dataSnapshot.child(xUserId).child("name").getValue().toString());
                     age.setText(dataSnapshot.child(xUserId).child("age").getValue().toString());
                     country.setText(dataSnapshot.child(xUserId).child("country").getValue().toString());

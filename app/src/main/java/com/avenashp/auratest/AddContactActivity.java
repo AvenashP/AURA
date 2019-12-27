@@ -39,8 +39,8 @@ public class AddContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String number = numberField.getText().toString();
-                String sname = shortField.getText().toString();
-                String lname = longField.getText().toString();
+                String sname = shortField.getText().toString().toUpperCase();
+                String lname = longField.getText().toString().toUpperCase();
 
                 funSaveUserContact(number,sname,lname);
             }
@@ -48,7 +48,7 @@ public class AddContactActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if(xMode.equals("Care Seeker")){
+            if(xMode.equals("CARE SEEKER")){
                 startActivity(new Intent(AddContactActivity.this, mChatsActivity.class));
                 finish();
             }
@@ -107,7 +107,7 @@ public class AddContactActivity extends AppCompatActivity {
         char[] ch1 = xUserId.toCharArray();
         char[] ch2 = userid.toCharArray();
         String chatid = "";
-        if(xMode.equals("Care Seeker")){
+        if(xMode.equals("CARE SEEKER")){
             for(int i=14;i<xUserId.length();i++){
                 chatid = chatid + ch1[i] +ch2[i];
             }

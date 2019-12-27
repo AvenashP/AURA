@@ -95,8 +95,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
         ContactModel cml = contactModel.get(position);
         String chatid = cml.getChat_id();
 
-        //Log.i(TAG, "onContactClick: "+chatid);
-
         Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
         intent.putExtra("chatid",chatid);
         startActivity(intent);

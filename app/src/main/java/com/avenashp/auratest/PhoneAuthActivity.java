@@ -55,7 +55,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 xNumber = numberField.getText().toString();
-                //Toast.makeText(PhoneAuthActivity.this,"Sending Code",Toast.LENGTH_LONG).show();
                 mProgressDialog.setMessage("Sending Code...");
                 mProgressDialog.show();
 
@@ -74,14 +73,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                mProgressDialog.dismiss();
                 xCode = phoneAuthCredential.getSmsCode();
                 if (xCode != null) {
                     codeField.setText(xCode);
                     funVerifyCode(xCode);
-                }
-                else{
-                    Toast.makeText(PhoneAuthActivity.this,"enter the code",Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -100,6 +95,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
             public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
                 xVerificationId = s;
+                mProgressDialog.dismiss();
             }
         };
     }

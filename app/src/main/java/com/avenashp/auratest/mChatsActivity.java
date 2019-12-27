@@ -78,6 +78,8 @@ public class mChatsActivity extends AppCompatActivity {
         dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
         dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
 
+        vibrator.vibrate(1000);
+
         funCreateDictionary();
 
         morseletter.addTextChangedListener(new TextWatcher() {
@@ -112,9 +114,9 @@ public class mChatsActivity extends AppCompatActivity {
         touch.setOnTouchListener(new OnSwipeTouchListener(this) {
             @SuppressLint("SimpleDateFormat")
             public void onSwipeTop() {
-
-                Log.i(TAG, "onSwipeTop: "+CONTACT);
+                Log.i(TAG, "onSwipeTop : "+CONTACT);
                 if(CONTACT){
+                    Log.i(TAG, "onSwipeTop if: ");
                     xMessage = "";
                     xMessage = textmsg.getText().toString();
                     xMorseCode = morsemsg.getText().toString();
@@ -132,6 +134,7 @@ public class mChatsActivity extends AppCompatActivity {
                     vibrator.vibrate(300);
                 }
                 else{
+                    Log.i(TAG, "onSwipeTop else: ");
                     xMessage = "";
                     xMessage = textmsg.getText().toString();
                     Arrays.fill(ch,"");
@@ -155,6 +158,7 @@ public class mChatsActivity extends AppCompatActivity {
                                         xName = cm.getLong_name();
                                         lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
                                         Log.i(TAG, "CHAT ID: "+xChatid);
+                                        Log.i(TAG, "NAME: "+xName);
                                         CONTACT = true;
                                         contact.setText(xName);
                                         funInvoke();
@@ -219,26 +223,20 @@ public class mChatsActivity extends AppCompatActivity {
                             }
                         }
                         while(index2 >= 0){
-
                             if(str[index2].equals("")){
-
                                 index2--;
                             }
                             String s = getKey(xDict,str[index2]);
                             if(s==null){
-
                                 str[index2] = "";
                                 index2--;
                             }
                             else{
-
                                 str[index2]="";
                                 break;
                             }
-
                         }
                         morseletter.setText(str[index2]);
-
                     }
                 }
             }
@@ -255,58 +253,6 @@ public class mChatsActivity extends AppCompatActivity {
 
     }
 
-    private void funInvoke() {
-        if(CONTACT){
-            lastquery.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
-                        xRecived = dataSnapshot.child("morse_code").getValue().toString();
-                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
-                        char[] morsearr = xRecived.toCharArray();
-                        int n = morsearr.length;
-                        long[] vibro = new long[(n*2)+1];
-                        int in1=0,in2=0;
-                        vibro[in2++] = 0;
-                        while(in1 < n){
-                            if(morsearr[in1] == '•'){
-                                vibro[in2++] = 100;
-                            }
-                            else if(morsearr[in1] == '−'){
-                                vibro[in2++] = 300;
-                            }
-                            else if(morsearr[in1] == ' '){
-                                vibro[in2++] = 0;
-                            }
-                            vibro[in2++] = 500;
-                            in1++;
-                        }
-                        vibrator.vibrate(vibro,-1);
-                    }
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
 
     class OnSwipeTouchListener implements View.OnTouchListener {
 
@@ -352,6 +298,12 @@ public class mChatsActivity extends AppCompatActivity {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                if(CONTACT){
+                    funInvoke();
+                }
+                else{
+                    Toast.makeText(mChatsActivity.this,"OPENS CAMERA !",Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
 
@@ -390,7 +342,6 @@ public class mChatsActivity extends AppCompatActivity {
         public void onSwipeTop() {}
         public void onSwipeBottom() {}
     }
-
 
     private void funCreateDictionary() {
         xDict.put("A", "•−");
@@ -449,6 +400,58 @@ public class mChatsActivity extends AppCompatActivity {
         xDict.put("?", "••−−••");
     }
 
+    private void funInvoke() {
+        if(CONTACT){
+            lastquery.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
+                        xRecived = dataSnapshot.child("morse_code").getValue().toString();
+                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
+                        char[] morsearr = xRecived.toCharArray();
+                        int n = morsearr.length;
+                        long[] vibro = new long[(n*2)+1];
+                        int in1=0,in2=0;
+                        vibro[in2++] = 0;
+                        while(in1 < n){
+                            if(morsearr[in1] == '•'){
+                                vibro[in2++] = 100;
+                            }
+                            else if(morsearr[in1] == '−'){
+                                vibro[in2++] = 300;
+                            }
+                            else if(morsearr[in1] == ' '){
+                                vibro[in2++] = 0;
+                            }
+                            vibro[in2++] = 500;
+                            in1++;
+                        }
+                        vibrator.vibrate(vibro,-1);
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
 
     private static <K, V> K getKey(Map<K, V> map, V value) {
         for (Map.Entry<K, V> entry : map.entrySet()) {
