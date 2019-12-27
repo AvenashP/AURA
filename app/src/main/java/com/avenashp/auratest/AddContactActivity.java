@@ -1,5 +1,6 @@
 package com.avenashp.auratest;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,7 +22,7 @@ public class AddContactActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
     private Button addButton,doneButton;
-    private TextInputEditText longField,shortField,numberField;
+    private TextInputEditText shortField,numberField;
     private String xUserId,xMode;
     private boolean FLAG;
     private FirebaseAuth fireAuth;
@@ -40,9 +41,7 @@ public class AddContactActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String number = numberField.getText().toString();
                 String sname = shortField.getText().toString().toUpperCase();
-                String lname = longField.getText().toString().toUpperCase();
-
-                funSaveUserContact(number,sname,lname);
+                funSaveUserContact(number,sname);
             }
         });
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -60,26 +59,26 @@ public class AddContactActivity extends AppCompatActivity {
         });
     }
 
-    private void funSaveUserContact(final String number, final String sname, final String lname) {
+    private void funSaveUserContact(final String number, final String sname) {
         dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
                 for (DataSnapshot snap : dataSnapshot.getChildren())
                 {
-                    String userid = snap.getKey();
                     String usernum = snap.child("number").getValue().toString();
 
                     if(number.equals(usernum)){
 
+                        String userid = snap.getKey();
                         String chatid = funGenerateChatID(userid);
+                        String lname = snap.child("name").getValue().toString();
 
                         dbUserContacts.child(userid).child("short_name").setValue(sname);
                         dbUserContacts.child(userid).child("long_name").setValue(lname);
                         dbUserContacts.child(userid).child("number").setValue(number);
                         dbUserContacts.child(userid).child("chat_id").setValue(chatid);
 
-                        longField.setText("");
                         shortField.setText("");
                         numberField.setText("");
 
@@ -123,7 +122,6 @@ public class AddContactActivity extends AppCompatActivity {
     private void funInit() {
         addButton = findViewById(R.id.addButton);
         doneButton = findViewById(R.id.nextButton);
-        longField = findViewById(R.id.longField);
         shortField = findViewById(R.id.shortField);
         numberField = findViewById(R.id.numberField);
         fireAuth = FirebaseAuth.getInstance();

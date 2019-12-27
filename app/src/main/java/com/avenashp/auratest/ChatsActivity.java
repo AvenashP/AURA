@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,7 +66,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
             @SuppressLint("SimpleDateFormat")
             @Override
             public void onClick(View view) {
-                xMessage = msgInput.getText().toString().toUpperCase();
+                xMessage = msgInput.getText().toString().toUpperCase().trim();
                 xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                 xTime = new SimpleDateFormat("hh:mm a").format(new Date());
                 xMorseCode = funConvertToMorseCode(xMessage);

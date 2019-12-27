@@ -95,6 +95,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
             public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
                 xVerificationId = s;
+                loginButton.setVisibility(View.VISIBLE);
                 mProgressDialog.dismiss();
             }
         };

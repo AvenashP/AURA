@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     xMode = dataSnapshot.child("mode").getValue().toString();
-                    if(xMode.equals("Care Giver")){
+                    if(xMode.equals("CARE GIVER")){
                         startActivity(new Intent(SplashActivity.this, ContactsActivity.class));
                         finish();
                     }

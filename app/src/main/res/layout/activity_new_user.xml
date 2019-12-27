@@ -7,16 +7,24 @@
     android:orientation="vertical"
     tools:context=".NewUserActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="NEW ACCOUNT"
+        android:gravity="center"
+        android:textSize="24sp"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
-            android:hint="USERNAME" />
+            android:hint="Username" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -28,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
-            android:hint="AGE" />
+            android:hint="Age" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -40,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences"
-            android:hint="COUNTRY" />
+            android:hint="Country"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -55,25 +63,29 @@
         android:id="@+id/genderRadio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
         <RadioButton
             android:id="@+id/maleRadio"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MALE" />
+            android:text="Male" />
 
         <RadioButton
             android:id="@+id/femaleRadio"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FEMALE" />
+            android:text="Female" />
 
         <RadioButton
             android:id="@+id/otherRadio"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="OTHERS" />
+            android:text="Others" />
     </RadioGroup>
 
     <TextView
@@ -88,46 +100,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
         <RadioButton
             android:id="@+id/giverRadio"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CARE GIVER" />
+            android:text="Care Giver" />
 
         <RadioButton
             android:id="@+id/seekerRadio"
-            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CARE SEEKER" />
-        <LinearLayout
-            android:id="@+id/seekerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginStart="35dp">
-            <CheckBox
-                android:id="@+id/blind"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="BLIND" />
-            <CheckBox
-                android:id="@+id/deaf"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="DEAF" />
-            <CheckBox
-                android:id="@+id/dumb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="DUMB" />
-
-        </LinearLayout>
+            android:text="Care Seeker" />
     </RadioGroup>
+    <LinearLayout
+        android:id="@+id/seekerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <CheckBox
+            android:id="@+id/blind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="BLIND" />
+        <CheckBox
+            android:id="@+id/deaf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="DEAF" />
+        <CheckBox
+            android:id="@+id/dumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="DUMB" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/nextButton"
