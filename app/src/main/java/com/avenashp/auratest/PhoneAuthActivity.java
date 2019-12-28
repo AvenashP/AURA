@@ -1,9 +1,11 @@
 package com.avenashp.auratest;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +39,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private TextInputEditText numberField, codeField;
     private Button sendButton,loginButton;
     private ProgressDialog mProgressDialog;
-    private String xVerificationId,xCode,xUserId,xNumber,xMode;
+    private String xVerificationId,xCode,xUserId,xNumber;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -118,13 +120,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if(dataSnapshot.child(xUserId).exists()){
                                 mProgressDialog.dismiss();
-                                startActivity(new Intent(PhoneAuthActivity.this,ExistingUserActivity.class));
+                                Intent intent = new Intent(PhoneAuthActivity.this,ExistingUserActivity.class);
+                                startActivity(intent);
                                 finish();
                             }
                             else{
-                                funSaveUserNumber(xNumber);
                                 mProgressDialog.dismiss();
-                                startActivity(new Intent(PhoneAuthActivity.this,NewUserActivity.class));
+                                Intent intent = new Intent(PhoneAuthActivity.this,NewUserActivity.class);
+                                intent.putExtra("xNumber",xNumber);
+                                startActivity(intent);
                                 finish();
                             }
                         }
@@ -146,10 +150,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
-    private void funSaveUserNumber(String number) {
-        dbUserDetails.child(xUserId).child("number").setValue(number);
-    }
-
     private void funInit() {
         numberField = findViewById(R.id.numberField);
         codeField = findViewById(R.id.codeField);
@@ -161,5 +161,27 @@ public class PhoneAuthActivity extends AppCompatActivity {
         if(fireUser != null)
             xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this);
+        builder.setTitle("Exit Application!");
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                PhoneAuthActivity.this.finish();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(true);
+        builder.show();
     }
 }

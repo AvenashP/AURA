@@ -1,7 +1,9 @@
 package com.avenashp.auratest;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +31,7 @@ public class NewUserActivity extends AppCompatActivity {
     private Boolean BLIND, DEAF, DUMB;
     private Button nextButton;
     private ProgressDialog mProgressDialog;
-    private String xUserId,xMode,xGender;
+    private String xUserId,xMode,xGender,xNumber;
     private int xType = 0;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -39,6 +42,8 @@ public class NewUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user);
+
+        xNumber = getIntent().getStringExtra("xNumber");
 
         funInit();
 
@@ -101,8 +106,7 @@ public class NewUserActivity extends AppCompatActivity {
                     xType = 0;
                 }
                 funSaveUserDetails();
-                Intent intent =new Intent(NewUserActivity.this,AddContactActivity.class);
-                intent.putExtra("xMode",xMode);
+                Intent intent = new Intent(NewUserActivity.this,AddContactActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -116,6 +120,7 @@ public class NewUserActivity extends AppCompatActivity {
         dbUserDetails.child(xUserId).child("gender").setValue(xGender);
         dbUserDetails.child(xUserId).child("mode").setValue(xMode);
         dbUserDetails.child(xUserId).child("type").setValue(xType);
+        dbUserDetails.child(xUserId).child("number").setValue(xNumber);
     }
 
     private void funInit() {
@@ -136,5 +141,27 @@ public class NewUserActivity extends AppCompatActivity {
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this);
+        builder.setTitle("Exit Application!");
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NewUserActivity.this.finish();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(true);
+        builder.show();
     }
 }

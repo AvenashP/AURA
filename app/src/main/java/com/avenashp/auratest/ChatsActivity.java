@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,12 +45,13 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private RecyclerView.LayoutManager chatlistLM;
     private TextInputEditText msgInput;
     private Button sendButton;
+    private LinearLayout msgLayout;
     private ArrayList<ChatModel> chatModels;
     private ChatAdapter chatAdapter;
-    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode;
+    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode,xMode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
-    private DatabaseReference dbChatManager,dbCurrentChat;
+    private DatabaseReference dbChatManager,dbCurrentChat,dbUserDetails;
     private Map<Character, String> xDict = new HashMap();
 
     @Override
@@ -58,9 +60,14 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         setContentView(R.layout.activity_chats);
 
         xChatid = getIntent().getExtras().getString("chatid");
-        funCreateDictionary();
+        xMode = getIntent().getStringExtra("xMode");
 
+        funCreateDictionary();
         funInit();
+
+        if(xMode.equals("CARE SEEKER")){
+            msgLayout.setVisibility(View.GONE);
+        }
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("SimpleDateFormat")
@@ -203,6 +210,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private void funInit() {
         sendButton = findViewById(R.id.sendButton);
         msgInput = findViewById(R.id.msgInput);
+        msgLayout = findViewById(R.id.msgLayout);
         chatModels = new ArrayList<>();
         chatlist = findViewById(R.id.chatlist);
         chatlist.setHasFixedSize(true);
@@ -211,7 +219,10 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
+        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
         dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
         dbCurrentChat = dbChatManager.child(xChatid);
     }
+
+
 }

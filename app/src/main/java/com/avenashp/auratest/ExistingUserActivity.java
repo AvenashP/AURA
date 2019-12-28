@@ -1,8 +1,10 @@
 package com.avenashp.auratest;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,11 +41,13 @@ public class ExistingUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(xMode.equals("CARE SEEKER")){
-                    startActivity(new Intent(ExistingUserActivity.this,mChatsActivity.class));
+                    Intent intent = new Intent(ExistingUserActivity.this,mChatsActivity.class);
+                    startActivity(intent);
                     finish();
                 }
                 else{
-                    startActivity(new Intent(ExistingUserActivity.this,ContactsActivity.class));
+                    Intent intent = new Intent(ExistingUserActivity.this,ContactsActivity.class);
+                    startActivity(intent);
                     finish();
                 }
             }
@@ -55,7 +59,6 @@ public class ExistingUserActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child(xUserId).exists()){
-
                     xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
                     name.setText(dataSnapshot.child(xUserId).child("name").getValue().toString());
                     age.setText(dataSnapshot.child(xUserId).child("age").getValue().toString());
@@ -83,5 +86,27 @@ public class ExistingUserActivity extends AppCompatActivity {
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ExistingUserActivity.this);
+        builder.setTitle("Exit Application!");
+        builder.setMessage("Are you sure?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ExistingUserActivity.this.finish();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(true);
+        builder.show();
     }
 }

@@ -1,8 +1,10 @@
 package com.avenashp.auratest;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,13 +30,20 @@ public class AddContactActivity extends AppCompatActivity {
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
+    private String activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_contact);
 
+        activity = getIntent().getStringExtra("Activity");
+
         funInit();
+
+        if(activity != null && activity.equals("settings")){
+            doneButton.setVisibility(View.GONE);
+        }
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,11 +57,13 @@ public class AddContactActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
             if(xMode.equals("CARE SEEKER")){
-                startActivity(new Intent(AddContactActivity.this, mChatsActivity.class));
+                Intent intent = new Intent(AddContactActivity.this, mChatsActivity.class);
+                startActivity(intent);
                 finish();
             }
             else{
-                startActivity(new Intent(AddContactActivity.this, ContactsActivity.class));
+                Intent intent = new Intent(AddContactActivity.this, ContactsActivity.class);
+                startActivity(intent);
                 finish();
             }
             }
@@ -130,4 +141,31 @@ public class AddContactActivity extends AppCompatActivity {
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
         dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
     }
+    @Override
+    public void onBackPressed() {
+        if(activity != null && activity.equals("settings")){
+            super.onBackPressed();
+        }
+        else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddContactActivity.this);
+            builder.setTitle("Exit Application!");
+            builder.setMessage("Are you sure?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AddContactActivity.this.finish();
+                    System.exit(0);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setCancelable(true);
+            builder.show();
+        }
+    }
+
 }

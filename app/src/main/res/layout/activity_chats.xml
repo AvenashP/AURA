@@ -13,7 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/msgLayout"
         android:scrollbars="vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp">
     </androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
@@ -22,12 +24,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/msgInput"
-            android:layout_weight="0.8"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Type here..."/>
+            android:layout_weight="0.8"
+            android:hint="Type here..." />
+
         <Button
             android:id="@+id/sendButton"
             android:layout_weight="0.2"

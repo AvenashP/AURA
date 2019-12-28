@@ -11,9 +11,12 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.avenashp.auratest.AdapterClass.ContactAdapter;
 import com.avenashp.auratest.ModelClass.ContactModel;
@@ -34,7 +37,8 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     private ArrayList<ContactModel> contactModel;
     private ContactAdapter contactAdapter;
     private ProgressDialog mProgressDialog;
-    private String xUserId;
+    private String xUserId,xMode,xName,xAge,xCountry,xGender,xType,xNumber;
+    private int back=2;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
@@ -46,8 +50,30 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
         setContentView(R.layout.activity_contacts);
 
         funInit();
-
+        funReadUserDetails();
         funReadContacts();
+    }
+
+    private void funReadUserDetails() {
+        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(xUserId).exists()){
+                    xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
+                    xName = dataSnapshot.child(xUserId).child("name").getValue().toString();
+                    xAge = dataSnapshot.child(xUserId).child("age").getValue().toString();
+                    xCountry = dataSnapshot.child(xUserId).child("country").getValue().toString();
+                    xGender = dataSnapshot.child(xUserId).child("gender").getValue().toString();
+                    xType = dataSnapshot.child(xUserId).child("type").getValue().toString();
+                    xNumber = dataSnapshot.child(xUserId).child("number").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void funReadContacts() {
@@ -58,8 +84,6 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     for (DataSnapshot snap : dataSnapshot.getChildren()){
-
-                        //Log.i(TAG, "contacts: "+snap);
 
                         ContactModel cm = snap.getValue(ContactModel.class);
                         contactModel.add(cm);
@@ -96,58 +120,46 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
         String chatid = cml.getChat_id();
 
         Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
+        intent.putExtra("xMode",xMode);
         intent.putExtra("chatid",chatid);
         startActivity(intent);
 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.addcontactsMenu:
-                startActivity(new Intent(ContactsActivity.this, AddContactActivity.class));
-                finish();
-                break;
-
-            case R.id.logoutMenu:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Sign Out!");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(ContactsActivity.this, SplashActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.setCancelable(true);
-                builder.show();
-                return(true);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onBackPressed() {
-        this.finish();
-        System.exit(0);
-        super.onBackPressed();
+        if(xMode.equals("CARE SEEKER")){
+            super.onBackPressed();
+        }
+        else{
+            if(back == 0){
+                Intent intent =  new Intent(ContactsActivity.this,SettingsActivity.class);
+                intent.putExtra("xName",xName);
+                intent.putExtra("xMode",xMode);
+                intent.putExtra("xNumber",xNumber);
+                intent.putExtra("xGender",xGender);
+                intent.putExtra("xCountry",xCountry);
+                intent.putExtra("xAge",xAge);
+                intent.putExtra("xType",xType);
+                startActivity(intent);
+            }
+            else{
+                final Toast toast = Toast.makeText(ContactsActivity.this,"Press back button "+back+" times", Toast.LENGTH_SHORT);
+                toast.show();
+                back--;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast.cancel();
+                    }
+                }, 500);
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    back=2;
+                }
+            }, 2000);
+        }
     }
-
-
 }

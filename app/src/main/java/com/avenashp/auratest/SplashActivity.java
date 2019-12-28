@@ -42,14 +42,18 @@ public class SplashActivity extends AppCompatActivity {
             dbUserDetails.child(xUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    xMode = dataSnapshot.child("mode").getValue().toString();
-                    if(xMode.equals("CARE GIVER")){
-                        startActivity(new Intent(SplashActivity.this, ContactsActivity.class));
-                        finish();
-                    }
-                    else{
-                        startActivity(new Intent(SplashActivity.this, mChatsActivity.class));
-                        finish();
+                    if(dataSnapshot.child("mode").exists()){
+                        xMode = dataSnapshot.child("mode").getValue().toString();
+                        if(xMode.equals("CARE GIVER")){
+                            Intent intent = new Intent(SplashActivity.this, ContactsActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                        else if(xMode.equals("CARE SEEKER")){
+                            Intent intent = new Intent(SplashActivity.this, mChatsActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 }
                 @Override
