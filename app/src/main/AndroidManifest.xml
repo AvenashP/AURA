@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -16,35 +17,35 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity
-            android:name=".SettingsActivity"/>
-        <activity
-            android:name=".mChatsActivity" />
-        <activity
-            android:name=".ExistingUserActivity"/>
-        <activity
-            android:name=".PhoneAuthActivity"/>
-        <activity
-            android:name=".ChatsActivity" />
-        <activity
-            android:name=".ContactsActivity"/>
-        <activity
-            android:name=".AddContactActivity" />
-        <activity
-            android:name=".NewUserActivity"/>
+        <activity android:name=".CameraActivity"/>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".mChatsActivity" />
+        <activity android:name=".ExistingUserActivity" />
+        <activity android:name=".PhoneAuthActivity" />
+        <activity android:name=".ChatsActivity" />
+        <activity android:name=".ContactsActivity" />
+        <activity android:name=".AddContactActivity" />
+        <activity android:name=".NewUserActivity" />
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
             android:excludeFromRecents="true"
-            android:stateNotNeeded="true">
+            android:launchMode="singleTask"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                android:value="label">
+
+            </meta-data>
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-                <category android:name="android.intent.category.HOME"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

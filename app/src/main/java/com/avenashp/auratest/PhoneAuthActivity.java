@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,13 +39,16 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
     private TextInputEditText numberField, codeField;
-    private Button sendButton,loginButton;
+    private MaterialBetterSpinner countryDD;
+    private Button sendButton,loginButton,button;
     private ProgressDialog mProgressDialog;
-    private String xVerificationId,xCode,xUserId,xNumber;
+    private ArrayAdapter<String> spinner;
+    private String xVerificationId,xCode,xUserId,xNumber,xCountry;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails;
+    private String[] countryList = {"India","Pakistan","China","Japan","Canada","France"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +58,18 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
         funInit();
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(PhoneAuthActivity.this,CameraActivity.class));
+            }
+        });
+
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 xNumber = numberField.getText().toString();
+                xCountry = countryDD.getText().toString().toUpperCase();
                 mProgressDialog.setMessage("Sending Code...");
                 mProgressDialog.show();
 
@@ -128,6 +141,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
                                 mProgressDialog.dismiss();
                                 Intent intent = new Intent(PhoneAuthActivity.this,NewUserActivity.class);
                                 intent.putExtra("xNumber",xNumber);
+                                intent.putExtra("xCountry",xCountry);
                                 startActivity(intent);
                                 finish();
                             }
@@ -152,15 +166,19 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private void funInit() {
         numberField = findViewById(R.id.numberField);
+        countryDD = findViewById(R.id.countryDD);
         codeField = findViewById(R.id.codeField);
         sendButton = findViewById(R.id.sendButton);
         loginButton = findViewById(R.id.loginButton);
         mProgressDialog = new ProgressDialog(PhoneAuthActivity.this);
+        spinner = new ArrayAdapter<>(this,android.R.layout.simple_dropdown_item_1line,countryList);
+        countryDD.setAdapter(spinner);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         if(fireUser != null)
             xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+        button =findViewById(R.id.button);
     }
 
     @Override

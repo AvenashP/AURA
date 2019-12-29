@@ -24,14 +24,14 @@ public class NewUserActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
     private LinearLayout seekerLayout;
-    private TextInputEditText nameField,ageField,countryField;
+    private TextInputEditText nameField,ageField;
     private RadioGroup modeRadio,genderRadio;
     private RadioButton giver, seeker;
     private CheckBox blindBox,deafBox,dumbBox;
     private Boolean BLIND, DEAF, DUMB;
     private Button nextButton;
     private ProgressDialog mProgressDialog;
-    private String xUserId,xMode,xGender,xNumber;
+    private String xUserId,xMode,xGender,xNumber,xCountry;
     private int xType = 0;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -44,6 +44,7 @@ public class NewUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_user);
 
         xNumber = getIntent().getStringExtra("xNumber");
+        xCountry = getIntent().getStringExtra("xCountry");
 
         funInit();
 
@@ -116,7 +117,7 @@ public class NewUserActivity extends AppCompatActivity {
     private void funSaveUserDetails() {
         dbUserDetails.child(xUserId).child("name").setValue(nameField.getText().toString().toUpperCase());
         dbUserDetails.child(xUserId).child("age").setValue(ageField.getText().toString().toUpperCase());
-        dbUserDetails.child(xUserId).child("country").setValue(countryField.getText().toString().toUpperCase());
+        dbUserDetails.child(xUserId).child("country").setValue(xCountry);
         dbUserDetails.child(xUserId).child("gender").setValue(xGender);
         dbUserDetails.child(xUserId).child("mode").setValue(xMode);
         dbUserDetails.child(xUserId).child("type").setValue(xType);
@@ -134,7 +135,6 @@ public class NewUserActivity extends AppCompatActivity {
         modeRadio = findViewById(R.id.modeRadio);
         seeker = findViewById(R.id.seekerRadio);
         giver = findViewById(R.id.giverRadio);
-        countryField = findViewById(R.id.countryField);
         nextButton = findViewById(R.id.nextButton);
         mProgressDialog = new ProgressDialog(NewUserActivity.this);
         fireAuth = FirebaseAuth.getInstance();

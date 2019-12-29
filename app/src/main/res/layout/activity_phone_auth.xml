@@ -16,6 +16,14 @@
         android:textSize="24sp"
         android:layout_marginBottom="20dp"/>
 
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/countryDD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select Country"
+        android:layout_marginHorizontal="80dp"
+        android:backgroundTint="@color/colorAccent"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,4 +63,10 @@
         android:layout_gravity="center"
         android:text="Verify"
         android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="camera" />
 </LinearLayout>
