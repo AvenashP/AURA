@@ -35,6 +35,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,6 +58,9 @@ public class mChatsActivity extends AppCompatActivity {
     private DatabaseReference dbUserDetails,dbChatManager,dbUserContacts;
     private Query lastquery;
     private Boolean CONTACT = false;
+    private String arrLabel = "";
+    private int arrAccuracy;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -65,10 +69,27 @@ public class mChatsActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_m_chat);
 
+        arrLabel = getIntent().getStringExtra("arrLabel");
+        arrAccuracy = getIntent().getIntExtra("arrAccuracy",0);
+
         funInit();
         funReadUserDetails();
         funCreateDictionary();
-        vibrator.vibrate(400);
+
+        if(arrLabel != null && arrAccuracy != 0){
+            String mor = funConvertToMorseCode(arrLabel);
+            final long[] vibe = funCreateVibrationPattern(mor);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    vibrator.vibrate(vibe,-1);
+
+                }
+            }, 1500);
+        }
+        else{
+            vibrator.vibrate(400);
+        }
 
         morseletter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -242,7 +263,12 @@ public class mChatsActivity extends AppCompatActivity {
                     funReadLastMessage();
                 }
                 else{
-                    Toast.makeText(mChatsActivity.this,"OPENS CAMERA !",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mChatsActivity.this,"OPENS CAMERA !",Toast.LENGTH_SHORT).show();
+                    morseletter.setText("");
+                    morsemsg.setText("");
+                    textmsg.setText("");
+                    Intent intent = new Intent(mChatsActivity.this,CameraActivity.class);
+                    startActivity(intent);
                 }
                 return true;
             }
@@ -294,24 +320,7 @@ public class mChatsActivity extends AppCompatActivity {
                     if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
                         xRecived = dataSnapshot.child("morse_code").getValue().toString();
                         Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
-                        char[] morsearr = xRecived.toCharArray();
-                        int n = morsearr.length;
-                        long[] vibro = new long[(n*2)+1];
-                        int in1=0,in2=0;
-                        vibro[in2++] = 0;
-                        while(in1 < n){
-                            if(morsearr[in1] == '•'){
-                                vibro[in2++] = 100;
-                            }
-                            else if(morsearr[in1] == '−'){
-                                vibro[in2++] = 400;
-                            }
-                            else if(morsearr[in1] == ' '){
-                                vibro[in2++] = 0;
-                            }
-                            vibro[in2++] = 700;
-                            in1++;
-                        }
+                        long[] vibro = funCreateVibrationPattern(xRecived);
                         vibrator.vibrate(vibro,-1);
                     }
                 }
@@ -337,6 +346,46 @@ public class mChatsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private String funConvertToMorseCode(String Message) {
+        char[] ch = Message.toCharArray();
+        String str = "";
+        String sp=" ";
+        for(int i=0;i<ch.length;i++){
+            if(i == (ch.length) - 1){
+                sp="";
+            }
+            if(xDict.get(Character.toString(ch[i])) == null){
+                return null;
+            }
+            else{
+                str = str + xDict.get(Character.toString(ch[i])) + sp;
+            }
+        }
+        return str;
+    }
+
+    private long[] funCreateVibrationPattern(String xRecived) {
+        char[] morsearr = xRecived.toCharArray();
+        int n = morsearr.length;
+        long[] vibro = new long[(n*2)+1];
+        int in1=0,in2=0;
+        vibro[in2++] = 0;
+        while(in1 < n){
+            if(morsearr[in1] == '•'){
+                vibro[in2++] = 100;
+            }
+            else if(morsearr[in1] == '−'){
+                vibro[in2++] = 400;
+            }
+            else if(morsearr[in1] == ' '){
+                vibro[in2++] = 0;
+            }
+            vibro[in2++] = 800;
+            in1++;
+        }
+        return vibro;
     }
 
     private static <K, V> K getKey(Map<K, V> map, V value) {

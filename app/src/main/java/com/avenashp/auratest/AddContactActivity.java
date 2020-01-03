@@ -1,6 +1,5 @@
 package com.avenashp.auratest;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +37,7 @@ public class AddContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_contact);
 
         activity = getIntent().getStringExtra("Activity");
+        xMode = getIntent().getStringExtra("xMode");
 
         funInit();
 

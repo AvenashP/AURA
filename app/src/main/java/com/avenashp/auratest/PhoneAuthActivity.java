@@ -40,7 +40,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
     private static final String TAG = "❌❌❌❌❌";
     private TextInputEditText numberField, codeField;
     private MaterialBetterSpinner countryDD;
-    private Button sendButton,loginButton,button;
+    private Button sendButton,loginButton;
     private ProgressDialog mProgressDialog;
     private ArrayAdapter<String> spinner;
     private String xVerificationId,xCode,xUserId,xNumber,xCountry;
@@ -57,13 +57,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
         funInit();
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(PhoneAuthActivity.this,CameraActivity.class));
-            }
-        });
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +171,6 @@ public class PhoneAuthActivity extends AppCompatActivity {
         if(fireUser != null)
             xUserId = fireUser.getUid();
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
-        button =findViewById(R.id.button);
     }
 
     @Override

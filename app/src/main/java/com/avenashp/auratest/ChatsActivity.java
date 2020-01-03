@@ -78,7 +78,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
                 xTime = new SimpleDateFormat("hh:mm a").format(new Date());
                 xMorseCode = funConvertToMorseCode(xMessage);
                 if(xMorseCode == null){
-                    Toast.makeText(ChatsActivity.this,"INVALID CHARACTERS !",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatsActivity.this,"Invalid Input..!",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     ChatModel chm  = new ChatModel(xMessage,xTime,xUserId,xDate,xMorseCode);

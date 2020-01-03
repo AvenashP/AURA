@@ -108,6 +108,7 @@ public class NewUserActivity extends AppCompatActivity {
                 }
                 funSaveUserDetails();
                 Intent intent = new Intent(NewUserActivity.this,AddContactActivity.class);
+                intent.putExtra("xMode",xMode);
                 startActivity(intent);
                 finish();
             }
