@@ -27,16 +27,20 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp">
+
             <TextView
+                android:id="@+id/profileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:text=""/>
+
             <TextView
+                android:id="@+id/profileNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change your personal details"
-                android:textSize="12sp"/>
+                android:textSize="12sp"
+                android:text=""/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/sAddContact"

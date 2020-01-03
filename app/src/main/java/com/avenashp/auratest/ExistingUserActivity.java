@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,20 +24,41 @@ import com.google.firebase.database.ValueEventListener;
 public class ExistingUserActivity extends AppCompatActivity {
 
     private static final String TAG = "❌EXISTING❌";
-    private TextView name,age,gender,country,usermode;
+    private TextView name,age,gender,country,usermode,topic;
     private Button continueBt;
     private String xUserId,xMode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails;
+    private String activity;
+    private ProgressDialog mProgressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_existing_user);
 
+        activity = getIntent().getStringExtra("Activity");
+
         funInit();
+        mProgressDialog.setMessage("Please wait....");
+        mProgressDialog.show();
         funReadUserDetails();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mProgressDialog.dismiss();
+            }
+        }, 1000);
+
+        if(activity != null && activity.equals("settings")){
+            topic.setText("PROFILE");
+            continueBt.setVisibility(View.GONE);
+        }
+        else{
+            topic.setText("EXISTING USER");
+        }
 
         continueBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,12 +99,14 @@ public class ExistingUserActivity extends AppCompatActivity {
     }
 
     private void funInit() {
+        topic = findViewById(R.id.topic);
         name = findViewById(R.id.name);
         age = findViewById(R.id.age);
         gender = findViewById(R.id.gender);
         country = findViewById(R.id.country);
         usermode = findViewById(R.id.usermode);
         continueBt = findViewById(R.id.continueBt);
+        mProgressDialog = new ProgressDialog(ExistingUserActivity.this);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
@@ -90,23 +115,28 @@ public class ExistingUserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ExistingUserActivity.this);
-        builder.setTitle("Exit Application!");
-        builder.setMessage("Are you sure?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ExistingUserActivity.this.finish();
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
+        if(activity != null && activity.equals("settings")){
+            super.onBackPressed();
+        }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ExistingUserActivity.this);
+            builder.setTitle("Exit Application!");
+            builder.setMessage("Are you sure?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    ExistingUserActivity.this.finish();
+                    System.exit(0);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setCancelable(true);
+            builder.show();
+        }
     }
 }

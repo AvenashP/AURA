@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ import java.util.Set;
 public class SettingsActivity extends AppCompatActivity {
 
     private LinearLayout sProfile, sAddContact,sViewChats,sLearn,sSettings,sSignOut,sUninstall;
+    private TextView profileName,profileNumber;
     private String xUserId,xMode,xName,xAge,xCountry,xGender,xNumber,xType;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -47,8 +49,10 @@ public class SettingsActivity extends AppCompatActivity {
         xNumber = getIntent().getStringExtra("xNumber");
         xType = getIntent().getStringExtra("xType");
 
-
         funInit();
+
+        profileName.setText(xName);
+        profileNumber.setText(xNumber);
 
         if(xMode.equals("CARE SEEKER")){
             sViewChats.setVisibility(View.VISIBLE);
@@ -58,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SettingsActivity.this,ExistingUserActivity.class);
+                intent.putExtra("Activity","settings");
                 startActivity(intent);
             }
         });
@@ -73,7 +78,8 @@ public class SettingsActivity extends AppCompatActivity {
         sLearn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this,"Coming Soon...!",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SettingsActivity.this,LearnActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -131,6 +137,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void funInit() {
+        profileName = findViewById(R.id.profileName);
+        profileNumber = findViewById(R.id.profileNumber);
         sProfile = findViewById(R.id.sProfile);
         sAddContact = findViewById(R.id.sAddContact);
         sViewChats = findViewById(R.id.sViewChats);
@@ -154,5 +162,12 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(SettingsActivity.this,ContactsActivity.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.moveTaskToFront(getTaskId(), 0);
     }
 }

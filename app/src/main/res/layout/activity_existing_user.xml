@@ -9,10 +9,10 @@
     tools:context=".ExistingUserActivity">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/topic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="EXISTING ACCOUNT"
+        android:text=""
         android:textSize="24sp"
         android:gravity="center"
         android:layout_marginBottom="20dp"/>
