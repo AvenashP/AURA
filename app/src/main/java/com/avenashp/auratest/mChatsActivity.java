@@ -79,13 +79,8 @@ public class mChatsActivity extends AppCompatActivity {
         if(arrLabel != null && arrAccuracy != 0){
             String mor = funConvertToMorseCode(arrLabel);
             final long[] vibe = funCreateVibrationPattern(mor);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    vibrator.vibrate(vibe,-1);
-
-                }
-            }, 1500);
+            vibrator.vibrate(vibe,-1);
+            Toast.makeText(mChatsActivity.this,arrLabel,Toast.LENGTH_LONG).show();
         }
         else{
             vibrator.vibrate(400);
@@ -192,7 +187,7 @@ public class mChatsActivity extends AppCompatActivity {
             }
 
             public void onSwipeLeft() {
-                if(!textmsg.getText().toString().equals("")){
+                if(!textmsg.getText().toString().equals("") || !morsemsg.getText().toString().equals("")){
                     vibrator.vibrate(25);
                     if(str[index].equals("")){
                         index--;
@@ -319,7 +314,7 @@ public class mChatsActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
                         xRecived = dataSnapshot.child("morse_code").getValue().toString();
-                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_LONG).show();
                         long[] vibro = funCreateVibrationPattern(xRecived);
                         vibrator.vibrate(vibro,-1);
                     }
@@ -371,7 +366,7 @@ public class mChatsActivity extends AppCompatActivity {
         int n = morsearr.length;
         long[] vibro = new long[(n*2)+1];
         int in1=0,in2=0;
-        vibro[in2++] = 0;
+        vibro[in2++] = 800;
         while(in1 < n){
             if(morsearr[in1] == '•'){
                 vibro[in2++] = 100;

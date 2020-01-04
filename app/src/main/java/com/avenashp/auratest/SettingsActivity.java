@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import java.util.Set;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private static final String TAG ="X X X X X X" ;
     private LinearLayout sProfile, sAddContact,sViewChats,sLearn,sSettings,sSignOut,sUninstall;
     private TextView profileName,profileNumber;
     private String xUserId,xMode,xName,xAge,xCountry,xGender,xNumber,xType;
