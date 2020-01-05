@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class mChatsActivity extends AppCompatActivity {
 
@@ -314,9 +315,26 @@ public class mChatsActivity extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
                         xRecived = dataSnapshot.child("morse_code").getValue().toString();
-                        Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_LONG).show();
+                        String[] arr = xRecived.split(" ");
                         long[] vibro = funCreateVibrationPattern(xRecived);
+                        long VTIME = 0;
+                        for(long l:vibro){
+                            VTIME = VTIME + l;
+                        }
                         vibrator.vibrate(vibro,-1);
+                        for(String str : arr){
+                            morseletter.setText(str);
+                            index++;
+                        }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Arrays.fill(ch,"");
+                                Arrays.fill(str,"");
+                                index=0;
+                                morseletter.setText("");
+                            }
+                        }, VTIME);
                     }
                 }
 
@@ -342,6 +360,7 @@ public class mChatsActivity extends AppCompatActivity {
             });
         }
     }
+
 
     private String funConvertToMorseCode(String Message) {
         char[] ch = Message.toCharArray();
