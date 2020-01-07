@@ -317,24 +317,30 @@ public class mChatsActivity extends AppCompatActivity {
                         xRecived = dataSnapshot.child("morse_code").getValue().toString();
                         String[] arr = xRecived.split(" ");
                         long[] vibro = funCreateVibrationPattern(xRecived);
-                        long VTIME = 0;
-                        for(long l:vibro){
-                            VTIME = VTIME + l;
-                        }
-                        vibrator.vibrate(vibro,-1);
-                        for(String str : arr){
-                            morseletter.setText(str);
-                            index++;
-                        }
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Arrays.fill(ch,"");
-                                Arrays.fill(str,"");
-                                index=0;
-                                morseletter.setText("");
+                        if(morsemsg.getText().toString().equals("") && textmsg.getText().toString().equals("")){
+                            long VTIME = 0;
+                            for(long l:vibro){
+                                VTIME = VTIME + l;
                             }
-                        }, VTIME);
+                            vibrator.vibrate(vibro,-1);
+                            for(String str : arr){
+                                morseletter.setText(str);
+                                index++;
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Arrays.fill(ch,"");
+                                    Arrays.fill(str,"");
+                                    index=0;
+                                    morseletter.setText("");
+                                }
+                            }, VTIME);
+                        }
+                        else{
+                            Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 }
 

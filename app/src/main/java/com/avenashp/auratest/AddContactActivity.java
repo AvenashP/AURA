@@ -3,6 +3,7 @@ package com.avenashp.auratest;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class AddContactActivity extends AppCompatActivity {
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
     private String activity;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class AddContactActivity extends AppCompatActivity {
     }
 
     private void funSaveUserContact(final String number, final String sname) {
+        progressDialog.setMessage("Adding contact...");
+        progressDialog.show();
         dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -92,7 +96,8 @@ public class AddContactActivity extends AppCompatActivity {
 
                         shortField.setText("");
                         numberField.setText("");
-
+                        progressDialog.dismiss();
+                        progressDialog.setCancelable(false);
                         Toast.makeText(AddContactActivity.this,"contact added !",Toast.LENGTH_SHORT).show();
                         FLAG = false;
                         break;
@@ -135,6 +140,7 @@ public class AddContactActivity extends AppCompatActivity {
         doneButton = findViewById(R.id.nextButton);
         shortField = findViewById(R.id.shortField);
         numberField = findViewById(R.id.numberField);
+        progressDialog = new ProgressDialog(AddContactActivity.this);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();

@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".LearnActivity"></activity>
+        <activity android:name=".LearnActivity"/>
         <activity android:name=".CameraActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".mChatsActivity" />

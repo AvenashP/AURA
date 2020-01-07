@@ -91,6 +91,21 @@ public class CameraActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try{
+            camera = Camera.open();
+            cameraModel = new CameraModel(this,camera);
+            cameraFrame.removeAllViews();
+            cameraFrame.addView(cameraModel);
+
+        }
+        catch (RuntimeException ex){
+            //something
+        }
+    }
+
     private void funOnCloudLabeler(final FirebaseVisionImage image) {
         FirebaseVisionImageLabeler cloudDetector = FirebaseVision.getInstance().getCloudImageLabeler();
         //labelsModels.clear();
@@ -159,4 +174,5 @@ public class CameraActivity extends AppCompatActivity {
         ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.moveTaskToFront(getTaskId(), 0);
     }
+
 }

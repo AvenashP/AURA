@@ -16,17 +16,18 @@
         android:textSize="24sp"
         android:layout_marginBottom="20dp"/>
 
-    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-        android:id="@+id/countryDD"
+    <TextView
+        android:id="@+id/countryView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Country"
-        android:layout_marginHorizontal="80dp"/>
+        android:gravity="center"
+        android:textSize="18sp"
+        android:text="Select Country"
+        android:layout_marginBottom="20dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hintAnimationEnabled="false">
+        android:layout_height="wrap_content">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/numberField"
             android:layout_width="match_parent"
@@ -38,8 +39,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hintAnimationEnabled="false">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/codeField"
@@ -48,19 +48,22 @@
             android:hint="OTP" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send Code"
-        android:layout_gravity="center"/>
+        android:gravity="center">
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Code" />
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Verify"
-        android:visibility="invisible"/>
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verify"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
 </LinearLayout>
