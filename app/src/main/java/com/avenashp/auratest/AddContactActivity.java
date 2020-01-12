@@ -25,7 +25,7 @@ public class AddContactActivity extends AppCompatActivity {
     private static final String TAG = "❌❌❌❌❌";
     private Button addButton,doneButton;
     private TextInputEditText shortField,numberField;
-    private String xUserId,xMode;
+    private String xUserId,xMode,xType;
     private boolean FLAG;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
@@ -40,6 +40,7 @@ public class AddContactActivity extends AppCompatActivity {
 
         activity = getIntent().getStringExtra("Activity");
         xMode = getIntent().getStringExtra("xMode");
+        xType = getIntent().getStringExtra("xType");
 
         funInit();
 
@@ -58,7 +59,7 @@ public class AddContactActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            if(xMode.equals("CARE SEEKER")){
+            if(!xType.equals("T_T")){
                 Intent intent = new Intent(AddContactActivity.this, mChatsActivity.class);
                 startActivity(intent);
                 finish();
@@ -78,6 +79,7 @@ public class AddContactActivity extends AppCompatActivity {
         dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                xType = dataSnapshot.child(xUserId).child("type").getValue().toString();
                 xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
                 for (DataSnapshot snap : dataSnapshot.getChildren())
                 {

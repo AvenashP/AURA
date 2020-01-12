@@ -10,6 +10,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,19 +38,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.stream.IntStream;
 
-public class mChatsActivity extends AppCompatActivity {
+public class mChatsActivity extends AppCompatActivity implements TextToSpeech.OnInitListener  {
 
     private static final String TAG = "❌SEEKER-CHAT❌";
     private TextView textmsg,morsemsg,morseletter,contact;
-    private LinearLayout touch;
+    private LinearLayout touch,audio;
     private Vibrator vibrator;
     private String[] ch = new String[1000];
     private String[] str = new String[1000];
@@ -61,6 +66,10 @@ public class mChatsActivity extends AppCompatActivity {
     private Boolean CONTACT = false;
     private String arrLabel = "";
     private int arrAccuracy;
+    private TextToSpeech TTS;
+    private String localName="name",localNumber="number",localAge="age",
+            localGender="gender",localCountry="country",localMode="mode",localType="type";
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -76,6 +85,7 @@ public class mChatsActivity extends AppCompatActivity {
         funInit();
         funReadUserDetails();
         funCreateDictionary();
+
 
         if(arrLabel != null && arrAccuracy != 0){
             String mor = funConvertToMorseCode(arrLabel);
@@ -214,7 +224,6 @@ public class mChatsActivity extends AppCompatActivity {
         });
 
         funReadLastMessage();
-
     }
 
 
@@ -314,33 +323,44 @@ public class mChatsActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if(!xUserId.equals(dataSnapshot.child("sender").getValue().toString())){
+                        String RecMsg = dataSnapshot.child("message").getValue().toString();
                         xRecived = dataSnapshot.child("morse_code").getValue().toString();
                         String[] arr = xRecived.split(" ");
                         long[] vibro = funCreateVibrationPattern(xRecived);
-                        if(morsemsg.getText().toString().equals("") && textmsg.getText().toString().equals("")){
-                            long VTIME = 0;
-                            for(long l:vibro){
-                                VTIME = VTIME + l;
-                            }
-                            vibrator.vibrate(vibro,-1);
-                            for(String str : arr){
-                                morseletter.setText(str);
-                                index++;
-                            }
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Arrays.fill(ch,"");
-                                    Arrays.fill(str,"");
-                                    index=0;
-                                    morseletter.setText("");
+                        if(xType.equals("V_V")){
+                            if(morsemsg.getText().toString().equals("") && textmsg.getText().toString().equals("")){
+                                long VTIME = 0;
+                                for(long l:vibro){
+                                    VTIME = VTIME + l;
                                 }
-                            }, VTIME);
+                                for(String str : arr){
+                                    morseletter.setText(str);
+                                    index++;
+                                }
+                                textmsg.setText(RecMsg);
+                                vibrator.vibrate(vibro,-1);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Arrays.fill(ch,"");
+                                        Arrays.fill(str,"");
+                                        index=0;
+                                        morseletter.setText("");
+                                    }
+                                }, VTIME);
+                            }
+                            else{
+                                vibrator.vibrate(vibro,-1);
+                                Toast.makeText(mChatsActivity.this,RecMsg,Toast.LENGTH_LONG).show();
+                            }
                         }
-                        else{
-                            Toast.makeText(mChatsActivity.this,dataSnapshot.child("message").getValue().toString(),Toast.LENGTH_LONG).show();
+                        else {
+                            int speechStatus = TTS.speak(RecMsg.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                            Toast.makeText(mChatsActivity.this,RecMsg,Toast.LENGTH_LONG).show();
+                            if (speechStatus == TextToSpeech.ERROR) {
+                                Log.e("TTS", "Error in converting Text to Speech!");
+                            }
                         }
-
                     }
                 }
 
@@ -366,7 +386,6 @@ public class mChatsActivity extends AppCompatActivity {
             });
         }
     }
-
 
     private String funConvertToMorseCode(String Message) {
         char[] ch = Message.toCharArray();
@@ -476,25 +495,48 @@ public class mChatsActivity extends AppCompatActivity {
     }
 
     private void funReadUserDetails() {
-        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(xUserId).exists()){
-                    xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
-                    xName = dataSnapshot.child(xUserId).child("name").getValue().toString();
-                    xAge = dataSnapshot.child(xUserId).child("age").getValue().toString();
-                    xCountry = dataSnapshot.child(xUserId).child("country").getValue().toString();
-                    xGender = dataSnapshot.child(xUserId).child("gender").getValue().toString();
-                    xType = dataSnapshot.child(xUserId).child("type").getValue().toString();
-                    xNumber = dataSnapshot.child(xUserId).child("number").getValue().toString();
-                }
+        try{
+            FileInputStream f1 = openFileInput(localName);
+            FileInputStream f2 = openFileInput(localNumber);
+            FileInputStream f3 = openFileInput(localAge);
+            FileInputStream f4 = openFileInput(localGender);
+            FileInputStream f5 = openFileInput(localCountry);
+            FileInputStream f6 = openFileInput(localMode);
+            FileInputStream f7 = openFileInput(localType);
+            int c;
+            String temp1 ="",temp2="",temp3 ="",temp4="",temp5 ="",temp6="",temp7 ="";
+            while((c = f1.read())!= -1){
+                temp1 = temp1 + Character.toString((char)c);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            while((c = f2.read())!= -1){
+                temp2 = temp2 + Character.toString((char)c);
             }
-        });
+            while((c = f3.read())!= -1){
+                temp3 = temp3 + Character.toString((char)c);
+            }
+            while((c = f4.read())!= -1){
+                temp4 = temp4 + Character.toString((char)c);
+            }
+            while((c = f5.read())!= -1){
+                temp5 = temp5 + Character.toString((char)c);
+            }
+            while((c = f6.read())!= -1){
+                temp6 = temp6 + Character.toString((char)c);
+            }
+            while((c = f7.read())!= -1){
+                temp7 = temp7 + Character.toString((char)c);
+            }
+            xName = temp1;
+            xNumber = temp2;
+            xAge = temp3;
+            xGender = temp4;
+            xCountry = temp5;
+            xMode = temp6;
+            xType = temp7;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void funInit() {
@@ -513,6 +555,8 @@ public class mChatsActivity extends AppCompatActivity {
         dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
         dbChatManager = FirebaseDatabase.getInstance().getReference("Chat Manager");
         dbUserContacts = dbUserDetails.child(xUserId).child("Contacts");
+        TTS = new TextToSpeech(mChatsActivity.this, this);
+
     }
 
     @Override
@@ -552,5 +596,29 @@ public class mChatsActivity extends AppCompatActivity {
         super.onPause();
         ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public void onInit(int i) {
+        if (i == TextToSpeech.SUCCESS) {
+            int ttsLang = TTS.setLanguage(Locale.US);
+            if (ttsLang == TextToSpeech.LANG_MISSING_DATA || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "The Language is not supported!");
+            } else {
+                Log.i("TTS", "Language Supported.");
+            }
+            Log.i("TTS", "Initialization success.");
+        } else {
+            Toast.makeText(getApplicationContext(), "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (TTS != null) {
+            TTS.stop();
+            TTS.shutdown();
+        }
     }
 }

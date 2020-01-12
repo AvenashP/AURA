@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity implements ContactAdapter.OnContactClickListener{
@@ -44,6 +45,8 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails,dbUserContacts;
+    private String localName="name",localNumber="number",localAge="age",
+            localGender="gender",localCountry="country",localMode="mode",localType="type";
 
     @SuppressLint("WrongConstant")
     @Override
@@ -57,25 +60,48 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     }
 
     private void funReadUserDetails() {
-        dbUserDetails.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(xUserId).exists()){
-                    xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
-                    xName = dataSnapshot.child(xUserId).child("name").getValue().toString();
-                    xAge = dataSnapshot.child(xUserId).child("age").getValue().toString();
-                    xCountry = dataSnapshot.child(xUserId).child("country").getValue().toString();
-                    xGender = dataSnapshot.child(xUserId).child("gender").getValue().toString();
-                    xType = dataSnapshot.child(xUserId).child("type").getValue().toString();
-                    xNumber = dataSnapshot.child(xUserId).child("number").getValue().toString();
-                }
+        try{
+            int c;
+            String temp1 ="",temp2="",temp3 ="",temp4="",temp5 ="",temp6="",temp7 ="";
+            FileInputStream f1 = openFileInput(localName);
+            FileInputStream f2 = openFileInput(localNumber);
+            FileInputStream f3 = openFileInput(localAge);
+            FileInputStream f4 = openFileInput(localGender);
+            FileInputStream f5 = openFileInput(localCountry);
+            FileInputStream f6 = openFileInput(localMode);
+            FileInputStream f7 = openFileInput(localType);
+            while((c = f1.read())!= -1){
+                temp1 = temp1 + Character.toString((char)c);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            while((c = f2.read())!= -1){
+                temp2 = temp2 + Character.toString((char)c);
             }
-        });
+            while((c = f3.read())!= -1){
+                temp3 = temp3 + Character.toString((char)c);
+            }
+            while((c = f4.read())!= -1){
+                temp4 = temp4 + Character.toString((char)c);
+            }
+            while((c = f5.read())!= -1){
+                temp5 = temp5 + Character.toString((char)c);
+            }
+            while((c = f6.read())!= -1){
+                temp6 = temp6 + Character.toString((char)c);
+            }
+            while((c = f7.read())!= -1){
+                temp7 = temp7 + Character.toString((char)c);
+            }
+            xName = temp1;
+            xNumber = temp2;
+            xAge = temp3;
+            xGender = temp4;
+            xCountry = temp5;
+            xMode = temp6;
+            xType = temp7;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void funReadContacts() {
@@ -130,7 +156,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
 
     @Override
     public void onBackPressed() {
-        if(xMode.equals("CARE SEEKER")){
+        if(!xType.equals("T_T")){
             super.onBackPressed();
         }
         else{

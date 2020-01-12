@@ -166,7 +166,7 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private void funGetPermission() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.INTERNET},1);
+            requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO},1);
         }
     }
 

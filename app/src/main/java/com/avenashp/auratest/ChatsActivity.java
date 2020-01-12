@@ -11,6 +11,8 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -38,9 +40,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener{
+public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener, TextToSpeech.OnInitListener {
 
     private static final String TAG = "❌GIVER-CHAT❌";
     private RecyclerView chatlist;
@@ -55,6 +58,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private FirebaseUser fireUser;
     private DatabaseReference dbChatManager,dbCurrentChat,dbUserDetails;
     private Map<Character, String> xDict = new HashMap();
+    private TextToSpeech TTS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,8 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
 
         funCreateDictionary();
         funInit();
+
+        TTS = new TextToSpeech(ChatsActivity.this, this);
 
         if(xMode.equals("CARE SEEKER")){
             msgLayout.setVisibility(View.GONE);
@@ -206,7 +212,14 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
 
     @Override
     public void onChatClick(int position) {
-        //DO SOMETHING
+        ChatModel cml = chatModels.get(position);
+        String text = cml.getMessage().toLowerCase();
+
+        int speechStatus = TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+
+        if (speechStatus == TextToSpeech.ERROR) {
+            Log.e("TTS", "Error in converting Text to Speech!");
+        }
     }
 
     private void funInit() {
@@ -231,5 +244,28 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         super.onPause();
         ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
         activityManager.moveTaskToFront(getTaskId(), 0);
+    }
+
+    @Override
+    public void onInit(int i) {
+        if (i == TextToSpeech.SUCCESS) {
+            int ttsLang = TTS.setLanguage(Locale.US);
+            if (ttsLang == TextToSpeech.LANG_MISSING_DATA || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "The Language is not supported!");
+            } else {
+                Log.i("TTS", "Language Supported.");
+            }
+            Log.i("TTS", "Initialization success.");
+        } else {
+            Toast.makeText(getApplicationContext(), "TTS Initialization failed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (TTS != null) {
+            TTS.stop();
+            TTS.shutdown();
+        }
     }
 }

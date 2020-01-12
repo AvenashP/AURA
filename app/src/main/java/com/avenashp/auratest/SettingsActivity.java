@@ -36,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity {
     private String xUserId,xMode,xName,xAge,xCountry,xGender,xNumber,xType;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
-    private DatabaseReference dbUserDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
         profileName.setText(xName);
         profileNumber.setText(xNumber);
 
-        if(xMode.equals("CARE SEEKER")){
+        if(!xType.equals("T_T")){
             sViewChats.setVisibility(View.VISIBLE);
         }
 
@@ -151,16 +150,15 @@ public class SettingsActivity extends AppCompatActivity {
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
-        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
     }
 
     @Override
     public void onBackPressed() {
-        if(xMode.equals("CARE SEEKER")){
+        if(!xType.equals("T_T")){
             Intent intent = new Intent(SettingsActivity.this,mChatsActivity.class);
             startActivity(intent);
         }
-        else if(xMode.equals("CARE GIVER")){
+        else if(xType.equals("T_T")){
             Intent intent = new Intent(SettingsActivity.this,ContactsActivity.class);
             startActivity(intent);
         }

@@ -18,13 +18,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileInputStream;
+
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "❌SPLASH❌";
-    private String xUserId,xMode;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
-    private DatabaseReference dbUserDetails;
+    private String xMode,xType;
+    private String localMode="mode",localType="type";
+
     public int TIME_OUT = 1500;
 
     @Override
@@ -35,32 +38,40 @@ public class SplashActivity extends AppCompatActivity {
 
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
-        dbUserDetails = FirebaseDatabase.getInstance().getReference("User Details");
+        try{
+            FileInputStream f6 = openFileInput(localType);
+            FileInputStream f7 = openFileInput(localMode);
+            int c;
+            String temp1 ="",temp2="";
+            while((c = f6.read())!= -1){
+                temp1 = temp1 + Character.toString((char)c);
+            }
+            while((c = f7.read())!= -1){
+                temp2 = temp2 + Character.toString((char)c);
+            }
+            xType = temp1;
+            xMode = temp2;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if(fireUser != null){
-            xUserId = fireUser.getUid();
-            dbUserDetails.child(xUserId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("mode").exists()){
-                        xMode = dataSnapshot.child("mode").getValue().toString();
-                        if(xMode.equals("CARE GIVER")){
-                            Intent intent = new Intent(SplashActivity.this, ContactsActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                        else if(xMode.equals("CARE SEEKER")){
-                            Intent intent = new Intent(SplashActivity.this, mChatsActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
+            if(xType.equals("T_T")){
+                Intent intent = new Intent(SplashActivity.this, ContactsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else if(xType.equals("A_A")){
+                Intent intent = new Intent(SplashActivity.this, aChatsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            else{
+                Intent intent = new Intent(SplashActivity.this, mChatsActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
         else{
             new Handler().postDelayed(new Runnable() {
