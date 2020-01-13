@@ -273,6 +273,7 @@ public class mChatsActivity extends AppCompatActivity implements TextToSpeech.On
                     morsemsg.setText("");
                     textmsg.setText("");
                     Intent intent = new Intent(mChatsActivity.this,CameraActivity.class);
+                    intent.putExtra("Activity","mChats");
                     startActivity(intent);
                 }
                 return true;

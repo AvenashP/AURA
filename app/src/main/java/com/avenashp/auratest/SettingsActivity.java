@@ -154,12 +154,16 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!xType.equals("T_T")){
-            Intent intent = new Intent(SettingsActivity.this,mChatsActivity.class);
+        if(xType.equals("A_A")){
+            Intent intent = new Intent(SettingsActivity.this,aChatsActivity.class);
             startActivity(intent);
         }
         else if(xType.equals("T_T")){
             Intent intent = new Intent(SettingsActivity.this,ContactsActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(SettingsActivity.this,mChatsActivity.class);
             startActivity(intent);
         }
     }
