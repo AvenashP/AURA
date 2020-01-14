@@ -163,7 +163,7 @@ public class mChatsActivity extends AppCompatActivity implements TextToSpeech.On
                                         String Name = cm.getLong_name();
                                         lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
                                         CONTACT = true;
-                                        contact.setText(Name);
+                                        contact.setText("To : "+Name);
                                         funReadLastMessage();
                                         break;
                                     }

@@ -106,6 +106,7 @@ public class CameraActivity extends AppCompatActivity implements TextToSpeech.On
         }
         catch (RuntimeException ex){
             //something
+            ex.printStackTrace();
         }
     }
 

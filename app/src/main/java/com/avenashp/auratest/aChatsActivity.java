@@ -81,6 +81,28 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
         STTIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         STTIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
+        record.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        STT.startListening(STTIntent);
+                        audioMsg.setText("");
+                        audioMsg.setHint("Listening....");
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        audioMsg.setText("");
+                        audioMsg.setHint("");
+                        STT.stopListening();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        funReadLastMessage();
+
         STT.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onReadyForSpeech(Bundle bundle) {
@@ -120,14 +142,9 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
                     xMessage = matches.get(0).toUpperCase().trim();
                     String[] arr = xMessage.split(" ");
 
-                    for (String str : matches)
-                        Log.i(TAG, "onMatches: " + str);
-
                     if (!CONTACT && matches != null) {
                         audioMsg.setText(xMessage);
                         final String cName = TextUtils.join("", arr);
-
-                        Log.i(TAG, "onChatName 1: " + cName.trim());
 
                         if(cName.equals("CAMERA")){
                             Intent intent = new Intent(aChatsActivity.this,CameraActivity.class);
@@ -149,10 +166,9 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
                                                 EMPTY = 0;
                                                 xChatid = cm.getChat_id();
                                                 String Name = cm.getLong_name();
-                                                Log.i(TAG, "onChatName 2: " + Name);
                                                 lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
                                                 CONTACT = true;
-                                                chatName.setText(Name);
+                                                chatName.setText("To : "+Name);
                                                 audioMsg.setText("");
                                                 funReadLastMessage();
                                                 break;
@@ -162,7 +178,7 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
                                         }
                                         if (EMPTY == 1) {
                                             vibrator.vibrate(800);
-                                            Log.i(TAG, "onDataChange: PLEASE TRY AGAIN");
+                                            funSpeech("please try again");
                                         }
                                     }
                                 }
@@ -175,17 +191,17 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
                         }
                     }
                     else {
-                        audioMsg.setText(xMessage);
                         if(xMessage.equals("CLOSE")){
                             CONTACT = false;
                             chatName.setText("");
                             audioMsg.setText("");
                             vibrator.vibrate(800);
                         }
-                        else if(xMessage.equals("READ")){
+                        else if(xMessage.equals("REPEAT")){
                             funReadLastMessage();
                         }
                         else {
+                            audioMsg.setText(xMessage);
                             xDate = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
                             xTime = new SimpleDateFormat("hh:mm a").format(new Date());
                             xMorseCode = funConvertToMorseCode(xMessage);
@@ -215,35 +231,26 @@ public class aChatsActivity extends AppCompatActivity implements TextToSpeech.On
             }
         });
 
-        record.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        STT.startListening(STTIntent);
-                        audioMsg.setText("");
-                        audioMsg.setHint("Listening....");
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        audioMsg.setText("");
-                        audioMsg.setHint("");
-                        STT.stopListening();
-                        break;
-                }
-                return false;
-            }
-        });
-
-        funReadLastMessage();
-
     }
 
-    private void funSpeech(String str) {
-        int speechStatus = TTS.speak(str.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
-        Toast.makeText(aChatsActivity.this,str,Toast.LENGTH_LONG).show();
+    private void funSpeech(final String str) {
+        final int[] speechStatus = new int[1];
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                speechStatus[0] = TTS.speak(str.toLowerCase(), TextToSpeech.QUEUE_FLUSH, null);
+                audioMsg.setText(str);
+            }
+        }, 800);
 
-        if (speechStatus == TextToSpeech.ERROR) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                audioMsg.setText("");
+            }
+        }, 2300);
+
+        if (speechStatus[0] == TextToSpeech.ERROR) {
             Log.e("TTS", "Error in converting Text to Speech!");
         }
     }
