@@ -53,7 +53,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private LinearLayout msgLayout;
     private ArrayList<ChatModel> chatModels;
     private ChatAdapter chatAdapter;
-    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode,xMode;
+    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode,xMode,xType;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbChatManager,dbCurrentChat,dbUserDetails;
@@ -67,13 +67,14 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
 
         xChatid = getIntent().getExtras().getString("chatid");
         xMode = getIntent().getStringExtra("xMode");
+        xType = getIntent().getStringExtra("xType");
 
         funCreateDictionary();
         funInit();
 
         TTS = new TextToSpeech(ChatsActivity.this, this);
 
-        if(xMode.equals("CARE SEEKER")){
+        if(!xType.equals("T_T")){
             msgLayout.setVisibility(View.GONE);
         }
 

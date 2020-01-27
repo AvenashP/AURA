@@ -149,6 +149,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
 
         Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
         intent.putExtra("xMode",xMode);
+        intent.putExtra("xType",xType);
         intent.putExtra("chatid",chatid);
         startActivity(intent);
 
