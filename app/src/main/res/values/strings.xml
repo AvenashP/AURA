@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AURA test</string>
+    <string name="app_name">AURA</string>
 
     <string-array name="country_names">
         <item>Afghanistan(+23)</item>
