@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 public class AddContactActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
-    private Button addButton,doneButton;
+    private Button doneButton;
+    private ImageView addButton;
     private TextInputEditText shortField,numberField;
     private String xUserId,xMode,xType;
     private boolean FLAG;
@@ -139,10 +141,10 @@ public class AddContactActivity extends AppCompatActivity {
 
     private void funInit() {
         addButton = findViewById(R.id.addButton);
-        doneButton = findViewById(R.id.nextButton);
+        doneButton = findViewById(R.id.doneButton);
         shortField = findViewById(R.id.shortField);
         numberField = findViewById(R.id.numberField);
-        progressDialog = new ProgressDialog(AddContactActivity.this);
+        progressDialog = new ProgressDialog(AddContactActivity.this,R.style.AlertBox);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
@@ -155,9 +157,8 @@ public class AddContactActivity extends AppCompatActivity {
             super.onBackPressed();
         }
         else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(AddContactActivity.this);
-            builder.setTitle("Exit Application!");
-            builder.setMessage("Are you sure?");
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddContactActivity.this,R.style.AlertBox);
+            builder.setTitle("Exit Application?");
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

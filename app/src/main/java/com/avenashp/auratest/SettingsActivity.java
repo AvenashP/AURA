@@ -52,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         funInit();
 
+        sViewChats.setVisibility(View.GONE);
         profileName.setText(xName);
         profileNumber.setText(xNumber);
 
@@ -103,7 +104,7 @@ public class SettingsActivity extends AppCompatActivity {
         sSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SettingsActivity.this,R.style.AlertBox);
                 builder.setTitle("Sign Out!");
                 builder.setMessage("Are you sure?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".ChatsActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:scaleType="centerCrop"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatlist"
         android:layout_width="match_parent"
@@ -14,6 +20,8 @@
         android:layout_above="@+id/msgLayout"
         android:scrollbars="vertical"
         android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp">
     </androidx.recyclerview.widget.RecyclerView>
@@ -30,14 +38,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:hint="Type here..." />
+            android:hint="Type here..."
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/comfortaa_regular"
+            android:backgroundTint="@color/colorAccent"
+            android:theme="@style/Theme.MaterialComponents"
+            android:textColorHint="@color/colorPrimaryGrey"/>
 
-        <Button
+        <ImageView
             android:id="@+id/sendButton"
             android:layout_weight="0.2"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="send"/>
+            android:layout_height="48dp"
+            android:src="@drawable/send"/>
     </LinearLayout>
 
 </RelativeLayout>

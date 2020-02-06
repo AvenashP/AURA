@@ -2,7 +2,6 @@ package com.avenashp.auratest;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,30 +10,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 
 public class NewUserActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
     private LinearLayout seekerLayout;
-    private TextInputEditText nameField,ageField;
-    private RadioGroup modeRadio,genderRadio;
-    private RadioButton giver, seeker;
+    private TextInputEditText nameField,ageField,modeRadio,genderRadio;
     private CheckBox blindBox,deafBox,dumbBox;
     private Boolean BLIND, DEAF, DUMB;
     private Button nextButton;
-    private ProgressDialog mProgressDialog;
     private String xUserId,xName,xAge,xMode,xGender,xNumber,xCountry,xType;
     private String localName="name",localNumber="number",localAge="age",
             localGender="gender",localCountry="country",localMode="mode",localType="type";
@@ -53,44 +44,53 @@ public class NewUserActivity extends AppCompatActivity {
 
         funInit();
 
-        seekerLayout.setVisibility(View.GONE);
-
-        seeker.setOnClickListener(new View.OnClickListener() {
+        genderRadio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                seekerLayout.setVisibility(View.VISIBLE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this,R.style.AlertBox);
+                builder.setTitle("Gender");
+                final String[] genders = {"Male","Female","Others"};
+                builder.setItems(genders, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        genderRadio.setText(genders[which]);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setCancelable(true);
+                builder.show();
             }
         });
 
-        giver.setOnClickListener(new View.OnClickListener() {
+        modeRadio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                seekerLayout.setVisibility(View.GONE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this,R.style.AlertBox);
+                builder.setTitle("Mode");
+                final String[] modes = {"Care Giver","Care Seeker"};
+                builder.setItems(modes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 1){
+                            seekerLayout.setVisibility(View.VISIBLE);
+                        }
+                        if(which == 0){
+                            seekerLayout.setVisibility(View.INVISIBLE);
+                        }
+                        modeRadio.setText(modes[which]);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setCancelable(true);
+                builder.show();
             }
         });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch(genderRadio.indexOfChild(findViewById(genderRadio.getCheckedRadioButtonId()))){
-                    case 0:
-                        xGender = "MALE";
-                        break;
-                    case 1:
-                        xGender = "FEMALE";
-                        break;
-                    case 2:
-                        xGender = "OTHERS";
-                        break;
-                }
-                switch(modeRadio.indexOfChild(findViewById(modeRadio.getCheckedRadioButtonId()))){
-                    case 0:
-                        xMode = "CARE GIVER";
-                        break;
-                    case 1:
-                        xMode = "CARE SEEKER";
-                        break;
-                }
+                xGender = genderRadio.getText().toString().toUpperCase();
+                xMode = modeRadio.getText().toString().toUpperCase();
                 if(xMode.equals("CARE SEEKER")){
                     BLIND = blindBox.isChecked();
                     DEAF = deafBox.isChecked();
@@ -177,10 +177,7 @@ public class NewUserActivity extends AppCompatActivity {
         deafBox = findViewById(R.id.deaf);
         dumbBox = findViewById(R.id.dumb);
         modeRadio = findViewById(R.id.modeRadio);
-        seeker = findViewById(R.id.seekerRadio);
-        giver = findViewById(R.id.giverRadio);
         nextButton = findViewById(R.id.nextButton);
-        mProgressDialog = new ProgressDialog(NewUserActivity.this);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
@@ -189,23 +186,9 @@ public class NewUserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this);
-        builder.setTitle("Exit Application!");
-        builder.setMessage("Are you sure?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                NewUserActivity.this.finish();
-                System.exit(0);
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setCancelable(true);
-        builder.show();
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(NewUserActivity.this, PhoneAuthActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

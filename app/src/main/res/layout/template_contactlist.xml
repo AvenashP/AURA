@@ -5,16 +5,18 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="15dp">
 
     <TextView
         android:id="@+id/contactShort"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="TV"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:fontFamily="@font/comfortaa_regular"
+        android:textColor="@color/colorPrimaryDark"
         android:gravity="center"
         android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:background="@color/colorAccent"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,16 +27,22 @@
             android:id="@+id/contactLong"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:text="Name"
+            android:textStyle="bold"
             android:textSize="24sp"
-            android:gravity="center_vertical"/>
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/comfortaa_regular"
+            android:textColor="@color/colorAccent"/>
 
         <TextView
             android:id="@+id/contactNumber"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:text="Number"
             android:textSize="12sp"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/comfortaa_regular"
+            android:textColor="@color/colorAccent"/>
     </LinearLayout>
 </LinearLayout>

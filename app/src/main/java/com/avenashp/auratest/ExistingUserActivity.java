@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +28,8 @@ import java.io.FileOutputStream;
 public class ExistingUserActivity extends AppCompatActivity {
 
     private static final String TAG = "❌EXISTING❌";
-    private TextView name,age,gender,country,usermode,topic;
+    private TextView topic;
+    private TextInputEditText name,age,gender,usermode,usertype;
     private Button continueBt;
     private String xUserId,xMode;
     private FirebaseAuth fireAuth;
@@ -100,11 +102,26 @@ public class ExistingUserActivity extends AppCompatActivity {
                     xMode = dataSnapshot.child(xUserId).child("mode").getValue().toString();
                     xType = dataSnapshot.child(xUserId).child("type").getValue().toString();
 
+
                     name.setText(xName);
                     age.setText(xAge);
-                    country.setText(xCountry);
                     gender.setText(xGender);
                     usermode.setText(xMode);
+                    if(xType.equals("V_V")){
+                        usertype.setText("Deaf, Blind,Dumb".toUpperCase());
+                    }
+                    else if(xType.equals("V_A")){
+                        usertype.setText("Dumb, Blind".toUpperCase());
+                    }
+                    else if(xType.equals("A_A")){
+                        usertype.setText("Blind".toUpperCase());
+                    }
+                    else if(xType.equals("T_T") && xMode.equals("CARE SEEKER")){
+                        usertype.setText("Deaf or Dumb".toUpperCase());
+                    }
+                    else{
+                        usertype.setText("Normal".toUpperCase());
+                    }
 
                     try{
                         FileOutputStream f1 = openFileOutput(localName,MODE_PRIVATE);
@@ -155,10 +172,10 @@ public class ExistingUserActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         age = findViewById(R.id.age);
         gender = findViewById(R.id.gender);
-        country = findViewById(R.id.country);
         usermode = findViewById(R.id.usermode);
-        continueBt = findViewById(R.id.continueBt);
-        mProgressDialog = new ProgressDialog(ExistingUserActivity.this);
+        usertype =findViewById(R.id.usertype);
+        continueBt = findViewById(R.id.continueButton);
+        mProgressDialog = new ProgressDialog(ExistingUserActivity.this,R.style.AlertBox);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();
@@ -171,9 +188,8 @@ public class ExistingUserActivity extends AppCompatActivity {
             super.onBackPressed();
         }
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ExistingUserActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(ExistingUserActivity.this,R.style.AlertBox);
             builder.setTitle("Exit Application!");
-            builder.setMessage("Are you sure?");
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

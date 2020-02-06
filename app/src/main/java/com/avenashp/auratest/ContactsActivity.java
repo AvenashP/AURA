@@ -130,7 +130,7 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     }
 
     private void funInit() {
-        mProgressDialog = new ProgressDialog(ContactsActivity.this);
+        mProgressDialog = new ProgressDialog(ContactsActivity.this,R.style.AlertBox);
         contactList = findViewById(R.id.contactList);
         contactList.setHasFixedSize(true);
         contactList.setLayoutManager(new LinearLayoutManager(this));

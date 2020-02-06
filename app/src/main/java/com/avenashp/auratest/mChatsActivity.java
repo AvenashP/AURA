@@ -163,7 +163,7 @@ public class mChatsActivity extends AppCompatActivity implements TextToSpeech.On
                                         String Name = cm.getLong_name();
                                         lastquery = dbChatManager.child(xChatid).orderByKey().limitToLast(1);
                                         CONTACT = true;
-                                        contact.setText("To : "+Name);
+                                        contact.setText(Name);
                                         funReadLastMessage();
                                         break;
                                     }
@@ -549,7 +549,6 @@ public class mChatsActivity extends AppCompatActivity implements TextToSpeech.On
         Arrays.fill(ch,"");
         Arrays.fill(str,"");
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        morseletter.setVisibility(TextView.INVISIBLE);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         xUserId = fireUser.getUid();

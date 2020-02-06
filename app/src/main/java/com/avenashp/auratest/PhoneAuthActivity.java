@@ -12,13 +12,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseException;
@@ -34,25 +33,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class PhoneAuthActivity extends AppCompatActivity {
 
     private static final String TAG = "❌❌❌❌❌";
-    private TextInputEditText numberField, codeField;
-    private TextView countryList;
-    private Button sendButton,loginButton;
+    private TextInputEditText numberField, codeField,countryView;
+    private TextView userHint;
+    private Button verifyButton;
     private ProgressDialog mProgressDialog;
     private String xVerificationId,xCode,xUserId,xNumber,xCountry,xCountryCode;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbUserDetails;
-    private int FLAG = 0, num=0;
+    private int FLAG = 0, num=0, VERIFY=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,72 +59,50 @@ public class PhoneAuthActivity extends AppCompatActivity {
         funInit();
         funGetPermission();
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        countryView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                xNumber = numberField.getText().toString();
-                xCountry = countryList.getText().toString().toUpperCase();
-                mProgressDialog.setMessage("Sending Code...");
-                mProgressDialog.show();
-
-                //  SEND VERIFICATION CODE TO PHONE NUMBER
-                PhoneAuthProvider.getInstance().verifyPhoneNumber("+91"+xNumber,60, TimeUnit.SECONDS, PhoneAuthActivity.this, mCallbacks);
-            }
-        });
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                xCode  = codeField.getText().toString();
-                funVerifyCode(xCode);
-                FLAG = 0;
-            }
-        });
-        countryList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this);
-                builder.setTitle("Choose your Country");
+                AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this,R.style.AlertBox);
+                builder.setTitle("Choose your Country:");
                 final String[] countries = PhoneAuthActivity.this.getResources().getStringArray(R.array.country_names);
                 final String[] codes = PhoneAuthActivity.this.getResources().getStringArray(R.array.country_codes);
-                final int checkedItem;
-                if(FLAG == 1) {
-                    checkedItem = num;
-                }
-                else{
-                    checkedItem = 0;
-                }
-                final String[] name = new String[1];
-                final String[] code = new String[1];
-
-                builder.setSingleChoiceItems(countries, checkedItem, new DialogInterface.OnClickListener() {
+                builder.setItems(countries, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        num = which;
-                        name[0] = countries[which];
-                        code[0] = codes[which];
-                        FLAG = 1;
-                    }
-                });
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(name[0]!=null) {
-                            countryList.setText(name[0]);
-                            xCountryCode = code[0];
-                            Log.i(TAG, "onCCCC: " + xCountryCode);
-                        }
+                        countryView.setText(countries[which]);
+                        xCountryCode = codes[which];
+                        dialog.dismiss();
                     }
                 });
                 builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        int index = Arrays.binarySearch(countries, countryList.getText().toString());
-                        num =  (index < 0) ? -1 : index;
+                    public void onClick(DialogInterface dialog, int i) {
                         dialog.dismiss();
                     }
                 });
                 builder.setCancelable(true);
                 builder.show();
+            }
+        });
+
+        verifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(VERIFY == 0){
+                    xNumber = numberField.getText().toString();
+                    xCountry = countryView.getText().toString().toUpperCase();
+                    mProgressDialog.setMessage("Sending Code...");
+                    mProgressDialog.show();
+
+                    //  SEND VERIFICATION CODE TO PHONE NUMBER
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(xCountryCode+xNumber,60, TimeUnit.SECONDS, PhoneAuthActivity.this, mCallbacks);
+                }
+                else{
+                    xCode  = codeField.getText().toString();
+                    funVerifyCode(xCode);
+                    VERIFY = 0;
+                    FLAG = 0;
+                }
             }
         });
 
@@ -144,10 +118,10 @@ public class PhoneAuthActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                    Toast.makeText(PhoneAuthActivity.this,"Invalid Request !",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PhoneAuthActivity.this,"Invalid entry!",Toast.LENGTH_SHORT).show();
                 }
                 else if (e instanceof FirebaseTooManyRequestsException) {
-                    Toast.makeText(PhoneAuthActivity.this,"SMS Exceeded",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PhoneAuthActivity.this,"SMS limit Exceeded, try after 3 hours. ",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(PhoneAuthActivity.this,"Try again later",Toast.LENGTH_SHORT).show();
@@ -157,8 +131,11 @@ public class PhoneAuthActivity extends AppCompatActivity {
             public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(s, forceResendingToken);
                 xVerificationId = s;
-                loginButton.setVisibility(View.VISIBLE);
-                sendButton.setVisibility(View.GONE);
+                userHint.setText("We have sent you a Verification code\nvia SMS to the number "+xNumber);
+                countryView.setVisibility(View.INVISIBLE);
+                numberField.setVisibility(View.INVISIBLE);
+                codeField.setVisibility(View.VISIBLE);
+                VERIFY = 1;
                 mProgressDialog.dismiss();
             }
         };
@@ -166,7 +143,14 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private void funGetPermission() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            requestPermissions(new String[]{Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.RECORD_AUDIO},1);
+            requestPermissions(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.DELETE_PACKAGES,
+            },1);
         }
     }
 
@@ -220,11 +204,11 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     private void funInit() {
         numberField = findViewById(R.id.numberField);
-        countryList = findViewById(R.id.countryView);
+        countryView = findViewById(R.id.countryView);
+        userHint = findViewById(R.id.userHint);
         codeField = findViewById(R.id.codeField);
-        sendButton = findViewById(R.id.sendButton);
-        loginButton = findViewById(R.id.loginButton);
-        mProgressDialog = new ProgressDialog(PhoneAuthActivity.this);
+        verifyButton = findViewById(R.id.verifyButton);
+        mProgressDialog = new ProgressDialog(PhoneAuthActivity.this,R.style.AlertBox);
         fireAuth = FirebaseAuth.getInstance();
         fireUser = fireAuth.getCurrentUser();
         if(fireUser != null)
@@ -234,9 +218,8 @@ public class PhoneAuthActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this);
-        builder.setTitle("Exit Application!");
-        builder.setMessage("Are you sure?");
+        AlertDialog.Builder builder = new AlertDialog.Builder(PhoneAuthActivity.this,R.style.AlertBox);
+        builder.setTitle("Exit Application?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -1,140 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".NewUserActivity">
-
-    <TextView
+    
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="NEW ACCOUNT"
-        android:gravity="center"
-        android:textSize="24sp"/>
-
-    <com.google.android.material.textfield.TextInputLayout
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:scaleType="centerCrop"/>
+    
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="WELCOME"
+            android:fontFamily="@font/comfortaa_regular"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/nameField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences"
-            android:hint="Username" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:hint="Username"
+            android:fontFamily="@font/comfortaa_regular"
+            android:backgroundTint="@color/colorAccent"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:theme="@style/Theme.MaterialComponents"
+            android:textColorHint="@color/colorPrimaryGrey"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"/>
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ageField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapSentences"
-            android:hint="Age" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Age"
+            android:fontFamily="@font/comfortaa_regular"
+            android:backgroundTint="@color/colorAccent"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:theme="@style/Theme.MaterialComponents"
+            android:textColorHint="@color/colorPrimaryGrey"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="GENDER :"
-        android:textSize="18sp"/>
 
-    <RadioGroup
-        android:id="@+id/genderRadio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/genderRadio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Gender"
+            android:fontFamily="@font/comfortaa_regular"
+            android:backgroundTint="@color/colorAccent"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:theme="@style/Theme.MaterialComponents"
+            android:textColorHint="@color/colorPrimaryGrey"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:focusableInTouchMode="false"/>
 
-        <RadioButton
-            android:id="@+id/maleRadio"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/modeRadio"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Male" />
+            android:hint="Mode"
+            android:fontFamily="@font/comfortaa_regular"
+            android:backgroundTint="@color/colorAccent"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:theme="@style/Theme.MaterialComponents"
+            android:textColorHint="@color/colorPrimaryGrey"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:focusable="false"
+            android:cursorVisible="false"
+            android:focusableInTouchMode="false"/>
 
-        <RadioButton
-            android:id="@+id/femaleRadio"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/seekerLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Female" />
-
-        <RadioButton
-            android:id="@+id/otherRadio"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Others" />
-    </RadioGroup>
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="MODE :"
-        android:textSize="18sp"/>
-    <RadioGroup
-        android:id="@+id/modeRadio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
-
-        <RadioButton
-            android:id="@+id/giverRadio"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Care Giver" />
-
-        <RadioButton
-            android:id="@+id/seekerRadio"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Care Seeker" />
-    </RadioGroup>
-    <LinearLayout
-        android:id="@+id/seekerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
-        <CheckBox
-            android:id="@+id/blind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="BLIND" />
-        <CheckBox
-            android:id="@+id/deaf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="DEAF" />
-        <CheckBox
-            android:id="@+id/dumb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="DUMB" />
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:visibility="invisible"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+            <CheckBox
+                android:id="@+id/blind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="BLIND"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="@font/comfortaa_regular"
+                android:buttonTint="@color/colorAccent" />
+            <CheckBox
+                android:id="@+id/deaf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DEAF"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="@font/comfortaa_regular"
+                android:buttonTint="@color/colorAccent"/>
+            <CheckBox
+                android:id="@+id/dumb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="DUMB"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:fontFamily="@font/comfortaa_regular"
+                android:buttonTint="@color/colorAccent"/>
+        </LinearLayout>
     </LinearLayout>
 
     <Button
         android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="next"
-        android:layout_gravity="center"/>
-</LinearLayout>
+        android:text="next  \u276F"
+        android:textSize="18sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/comfortaa_regular"
+        android:background="@color/colorAccent"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

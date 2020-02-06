@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,12 +50,15 @@ public class SplashActivity extends AppCompatActivity {
             while((c = f7.read())!= -1){
                 temp2 = temp2 + Character.toString((char)c);
             }
+            Log.d(TAG, "SPALSH: "+xType+" "+xMode+" "+fireUser);
             xType = temp1;
             xMode = temp2;
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+
+        //Toast.makeText(this, xType+" "+xMode+" "+fireUser, Toast.LENGTH_SHORT).show();
 
         if(fireUser != null){
             if(xType.equals("T_T")){

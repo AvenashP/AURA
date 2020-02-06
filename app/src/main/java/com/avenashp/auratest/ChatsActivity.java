@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private RecyclerView chatlist;
     private RecyclerView.LayoutManager chatlistLM;
     private TextInputEditText msgInput;
-    private Button sendButton;
+    private ImageView sendButton;
     private LinearLayout msgLayout;
     private ArrayList<ChatModel> chatModels;
     private ChatAdapter chatAdapter;
