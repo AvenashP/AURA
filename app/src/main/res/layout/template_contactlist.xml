@@ -4,7 +4,7 @@
     android:id="@+id/contactLayout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="75dp"
     android:layout_marginBottom="15dp">
 
     <TextView
@@ -14,7 +14,7 @@
         android:fontFamily="@font/comfortaa_regular"
         android:textColor="@color/colorPrimaryDark"
         android:gravity="center"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:background="@color/colorAccent"/>
 
