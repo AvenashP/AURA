@@ -48,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Age"
+            android:inputType="number"
             android:fontFamily="@font/comfortaa_regular"
             android:backgroundTint="@color/colorAccent"
             android:textSize="20sp"

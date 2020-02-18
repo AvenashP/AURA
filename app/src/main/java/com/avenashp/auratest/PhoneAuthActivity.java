@@ -119,12 +119,15 @@ public class PhoneAuthActivity extends AppCompatActivity {
             public void onVerificationFailed(FirebaseException e) {
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(PhoneAuthActivity.this,"Invalid entry!",Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
                 }
                 else if (e instanceof FirebaseTooManyRequestsException) {
                     Toast.makeText(PhoneAuthActivity.this,"SMS limit Exceeded, try after 3 hours. ",Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
                 }
                 else{
                     Toast.makeText(PhoneAuthActivity.this,"Try again later",Toast.LENGTH_SHORT).show();
+                    mProgressDialog.dismiss();
                 }
             }
             @Override

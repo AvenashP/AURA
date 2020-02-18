@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -47,6 +48,8 @@ public class NewUserActivity extends AppCompatActivity {
         genderRadio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nameField.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                ageField.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this,R.style.AlertBox);
                 builder.setTitle("Gender");
                 final String[] genders = {"Male","Female","Others"};
@@ -65,6 +68,8 @@ public class NewUserActivity extends AppCompatActivity {
         modeRadio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nameField.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                ageField.onEditorAction(EditorInfo.IME_ACTION_DONE);
                 AlertDialog.Builder builder = new AlertDialog.Builder(NewUserActivity.this,R.style.AlertBox);
                 builder.setTitle("Mode");
                 final String[] modes = {"Care Giver","Care Seeker"};
