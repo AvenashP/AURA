@@ -47,6 +47,8 @@ import java.util.Map;
 public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnChatClickListener, TextToSpeech.OnInitListener {
 
     private static final String TAG = "❌GIVER-CHAT❌";
+    private LinearLayout header;
+    private TextView openShort,openLong;
     private RecyclerView chatlist;
     private RecyclerView.LayoutManager chatlistLM;
     private TextInputEditText msgInput;
@@ -54,7 +56,7 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     private LinearLayout msgLayout;
     private ArrayList<ChatModel> chatModels;
     private ChatAdapter chatAdapter;
-    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode,xMode,xType;
+    private String xMessage,xUserId,xChatid,xDate,xTime,xMorseCode,xMode,xType,xShort,xLong;
     private FirebaseAuth fireAuth;
     private FirebaseUser fireUser;
     private DatabaseReference dbChatManager,dbCurrentChat,dbUserDetails;
@@ -69,10 +71,15 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
         xChatid = getIntent().getExtras().getString("chatid");
         xMode = getIntent().getStringExtra("xMode");
         xType = getIntent().getStringExtra("xType");
+        xShort = getIntent().getStringExtra("openShort");
+        xLong = getIntent().getStringExtra("openLong");
 
         funCreateDictionary();
         funInit();
 
+        header.setTranslationZ(100);
+        openShort.setText(xShort);
+        openLong.setText(xLong);
         TTS = new TextToSpeech(ChatsActivity.this, this);
 
         if(!xType.equals("T_T")){
@@ -225,6 +232,9 @@ public class ChatsActivity extends AppCompatActivity implements ChatAdapter.OnCh
     }
 
     private void funInit() {
+        header = findViewById(R.id.header);
+        openShort = findViewById(R.id.openShort);
+        openLong = findViewById(R.id.openLong);
         sendButton = findViewById(R.id.sendButton);
         msgInput = findViewById(R.id.msgInput);
         msgLayout = findViewById(R.id.msgLayout);

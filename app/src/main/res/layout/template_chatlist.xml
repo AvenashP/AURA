@@ -8,7 +8,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/chatCard"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="5dp">
@@ -25,8 +25,9 @@
                 android:layout_height="wrap_content"
                 android:text="Message"
                 android:fontFamily="@font/comfortaa_regular"
-                android:textSize="20sp"
-                android:layout_marginStart="10dp"
+                android:textSize="18sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="5dp"
                 android:textStyle="bold"
                 android:gravity="center_vertical"/>
 
@@ -35,9 +36,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="time"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"
                 android:fontFamily="@font/comfortaa_regular"
-                android:layout_marginEnd="10dp"
-                android:textSize="10sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="5dp"
+                android:textSize="9sp"
                 android:textAlignment="textEnd"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

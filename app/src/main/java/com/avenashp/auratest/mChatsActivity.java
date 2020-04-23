@@ -77,6 +77,7 @@ public class mChatsActivity extends AppCompatActivity implements TextToSpeech.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_m_chat);
 
         arrLabel = getIntent().getStringExtra("arrLabel");

@@ -4,13 +4,13 @@
     android:id="@+id/contactLayout"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:layout_marginBottom="15dp">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/contactShort"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/comfortaa_regular"
         android:textColor="@color/colorPrimaryDark"
         android:gravity="center"
@@ -21,14 +21,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/contactLong"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="25dp"
             android:textStyle="bold"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_marginStart="10dp"
             android:gravity="center_vertical"
             android:fontFamily="@font/comfortaa_regular"
@@ -38,10 +39,10 @@
             android:id="@+id/contactNumber"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/comfortaa_regular"
             android:textColor="@color/colorAccent"/>
     </LinearLayout>

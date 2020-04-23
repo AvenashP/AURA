@@ -146,11 +146,15 @@ public class ContactsActivity extends AppCompatActivity implements ContactAdapte
     public void onContactClick(int position) {
         ContactModel cml = contactModel.get(position);
         String chatid = cml.getChat_id();
+        String openShort = cml.getShort_name();
+        String openLong = cml.getLong_name();
 
         Intent intent = new Intent(ContactsActivity.this,ChatsActivity.class);
         intent.putExtra("xMode",xMode);
         intent.putExtra("xType",xType);
         intent.putExtra("chatid",chatid);
+        intent.putExtra("openShort",openShort);
+        intent.putExtra("openLong",openLong);
         startActivity(intent);
 
     }

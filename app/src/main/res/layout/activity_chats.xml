@@ -11,20 +11,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/background"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop">
+    </ImageView>
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:id="@+id/openShort"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:fontFamily="@font/comfortaa_regular"
+            android:textColor="@color/colorAccent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:id="@+id/openLong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/comfortaa_regular"
+            android:textColor="@color/colorPrimaryDark"/>
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatlist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="650dp"
         android:layout_above="@+id/msgLayout"
-        android:scrollbars="vertical"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_below="@+id/header"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical"
+        android:scrollbars="vertical"></androidx.recyclerview.widget.RecyclerView>
 
     <LinearLayout
         android:id="@+id/msgLayout"
